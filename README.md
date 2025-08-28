@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Music Studio Frontend
+
+**Capstone Project: Automated Video Creation Platform Frontend**
+
+## Backend
+
+https://github.com/flpasc/awd-capstone-aI-music-studio-backend
+
+## Overview
+
+AI Music Studio is an intelligent video creation platform that automatically combines your audio and video content to generate engaging videos for social media. Perfect for users with no video editing experience who want to create professional-looking content from their personal media libraries.
+
+## The Idea
+
+Transform your media collection into compelling videos effortlessly. Whether you have holiday memories, wedding footage, or any themed content, AI Music Studio automatically synchronizes your audio and video files to create polished videos ready for sharing.
+
+## Target Audience
+
+- **Non-technical users** with no video editing software knowledge
+- **Content creators** looking to streamline their workflow
+- **Event organizers** wanting to create summary videos for weddings, holidays, and special occasions
+- **Social media enthusiasts** who want professional-looking content with custom music
+
+## Key Features
+
+### 🎵 Automatic Audio-Video Synchronization
+
+- Upload your audio files and video/image content
+- AI automatically combines and synchronizes media
+- Creates seamless transitions and timing
+
+### 🎬 Themed Video Generation
+
+- Organize content by topics (holidays, weddings, events, etc.)
+- AI matches audio mood with visual content
+- Customizable video styles and templates
+
+### ⚙️ Flexible Output Options
+
+- **Call-to-Action (CTA) Integration**: Add custom CTAs to your videos
+- **YouTube Upload**: Direct upload to your YouTube channel
+- **Local Download**: Save videos locally for other platforms
+- **Social Media Optimization**: Videos optimized for different platforms
+
+### 🚀 User-Friendly Experience
+
+- No prior video editing knowledge required
+- Intuitive drag-and-drop interface
+- Automated processing with minimal user input
+- Quick preview and editing capabilities
+
+## How It Works
+
+1. **Upload Media**: Add your audio files and video/image content to your library
+2. **Choose Theme**: Select or create a themed collection (e.g., "Summer Holiday 2024")
+3. **AI Processing**: Our AI analyzes and automatically combines your media
+4. **Customize**: Adjust settings, add CTAs, and preview your video
+5. **Export**: Choose to upload directly to YouTube or download locally
 
 ## Getting Started
 
-First, run the development server:
+_Coming soon - setup and installation instructions_
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technology Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+_Built with modern web technologies for optimal performance and user experience_
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+_Transform your memories into shareable moments with AI Music Studio_
