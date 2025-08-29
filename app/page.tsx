@@ -1,7 +1,8 @@
+import { NewProjectDialog } from "@/components/NewProjectDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -54,10 +55,7 @@ export default function Dashboard() {
 
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-semibold text-zinc-900">Projects</h2>
-          <Button className="bg-zinc-900 hover:bg-zinc-800 text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Project
-          </Button>
+          <NewProjectDialog />
         </div>
 
         <div className="grid grid-cols-5 gap-6">
