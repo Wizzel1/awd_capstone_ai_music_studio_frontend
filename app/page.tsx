@@ -32,7 +32,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-zinc-50">
       <div className="p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-24">
           <h1 className="text-2xl font-bold text-zinc-900">AI Studio</h1>
 
           <div className="flex items-center gap-4">
@@ -60,7 +60,7 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-5 gap-6">
           {projects.map((project) => (
             <Link key={project.id} href={`/projects/${project.id}`}>
               <Card className="group hover:shadow-md transition-all duration-200 cursor-pointer bg-white border-zinc-200 hover:border-zinc-300">
