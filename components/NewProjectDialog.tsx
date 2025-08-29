@@ -12,8 +12,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { createProject } from "@/lib/actions/createProject";
 import { Plus } from "lucide-react";
+import { useFormStatus } from "react-dom";
 
 export function NewProjectDialog() {
+  function SubmitButton() {
+    const { pending } = useFormStatus(); // This works because it's inside the form
+    return (
+      <Button type="submit" disabled={pending}>
+        {pending ? "Creating..." : "Create"}
+      </Button>
+    );
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -36,7 +45,7 @@ export function NewProjectDialog() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <SubmitButton />
           </DialogFooter>
         </form>
       </DialogContent>
