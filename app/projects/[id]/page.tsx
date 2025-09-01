@@ -1,15 +1,8 @@
 "use client";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
 
@@ -110,7 +103,12 @@ export default function ProjectDetailsPage({
       {/* Project Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-900">{project.name}</h1>
+          <div className="flex items-center gap-2  ">
+            <Link href="/">
+              <ChevronLeft className="size-6" />
+            </Link>
+            <h1 className="text-3xl font-bold text-zinc-900">{project.name}</h1>
+          </div>
           <p className="text-zinc-600 mt-1">
             {selectedFiles.length > 0
               ? `${selectedFiles.length} file${
@@ -145,7 +143,7 @@ export default function ProjectDetailsPage({
       </div>
 
       {/* Breadcrumbs */}
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Projects</BreadcrumbLink>
@@ -155,7 +153,7 @@ export default function ProjectDetailsPage({
             <BreadcrumbPage>{project.name}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
         {/* Main Content */}
