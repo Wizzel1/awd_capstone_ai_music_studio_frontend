@@ -8,20 +8,26 @@ interface UploadResult {
 }
 
 interface UploadOptions {
-  bucketName?: string;
   maxFileSize?: number; // in bytes
   allowedTypes?: string[];
 }
 
+if (!process.env.NEXT_PUBLIC_API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not set");
+}
+if (!process.env.NEXT_PUBLIC_BUCKET_NAME) {
+  throw new Error("NEXT_PUBLIC_BUCKET_NAME is not set");
+}
+
 export class FileService {
   private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  private static bucketName = process.env.NEXT_PUBLIC_BUCKET_NAME;
 
   static async uploadFile(
     file: File,
     options: UploadOptions = {}
   ): Promise<UploadResult> {
     const {
-      bucketName = "test",
       maxFileSize = 10 * 1024 * 1024, // 10MB default
       allowedTypes = ["image/*", "audio/*"],
     } = options;
@@ -56,7 +62,7 @@ export class FileService {
     formData.append("file", file);
 
     const response = await fetch(
-      `${this.baseUrl}/api/v1/storage/upload/${bucketName}`,
+      `${this.baseUrl}/api/v1/storage/upload/${this.bucketName}`,
       {
         method: "POST",
         body: formData,
