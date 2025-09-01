@@ -9,8 +9,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Download, Trash2 } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 interface MediaFile {
@@ -25,12 +26,13 @@ export default function ProjectDetailsPage({
 }: {
   params: { id: string };
 }) {
+  const { id: projectId } = useParams();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
   // Mock project data - in real app this would come from API/database
   const project = {
-    id: params.id,
-    name: params.id === "1" ? "Marriage Video" : `Project ${params.id}`,
+    id: projectId,
+    name: projectId === "1" ? "Marriage Video" : `Project ${projectId}`,
     progress: 10,
     audioFiles: [
       { id: "a1", name: "Audio.wav", type: "audio" as const },
@@ -88,11 +90,6 @@ export default function ProjectDetailsPage({
     );
   };
 
-  const deleteSelected = () => {
-    // Handle delete logic here
-    setSelectedFiles([]);
-  };
-
   return (
     <div className="min-h-screen bg-zinc-50">
       {/* Header */}
@@ -125,10 +122,6 @@ export default function ProjectDetailsPage({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{project.progress}%</BreadcrumbPage>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
               <BreadcrumbPage>{project.name}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -139,10 +132,6 @@ export default function ProjectDetailsPage({
           <h1 className="text-2xl font-semibold text-zinc-900">
             {project.name}
           </h1>
-          <Button className="bg-zinc-900 hover:bg-zinc-800 text-white">
-            <Download className="h-4 w-4 mr-2" />
-            Download latest
-          </Button>
         </div>
 
         <div className="flex gap-8">
@@ -227,27 +216,6 @@ export default function ProjectDetailsPage({
               Render Video
             </Button>
           </div>
-
-          {/* Delete Panel */}
-          {selectedFiles.length > 0 && (
-            <div className="w-64 bg-white border border-zinc-200 rounded-lg p-4 h-fit">
-              <h3 className="font-medium text-zinc-900 mb-2">
-                Delete Selected
-              </h3>
-              <p className="text-sm text-zinc-600 mb-4">
-                {selectedFiles.length} file
-                {selectedFiles.length !== 1 ? "s" : ""} selected
-              </p>
-              <Button
-                onClick={deleteSelected}
-                variant="destructive"
-                className="w-full"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Files
-              </Button>
-            </div>
-          )}
         </div>
       </div>
     </div>
