@@ -9,8 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -92,27 +90,6 @@ export default function ProjectDetailsPage({
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* Header */}
-      <div className="bg-white border-b border-zinc-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-zinc-600 hover:text-zinc-900"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                AI Studio
-              </Button>
-            </Link>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-zinc-300 rounded-full"></div>
-          </div>
-        </div>
-      </div>
-
       <div className="px-6 py-6">
         {/* Breadcrumbs */}
         <Breadcrumb className="mb-6">
