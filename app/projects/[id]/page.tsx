@@ -19,7 +19,12 @@ export default function ProjectDetailsPage({
   params: { id: string };
 }) {
   const { id: projectId } = useParams();
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [selectedAudioFiles, setSelectedAudioFiles] = useState<
+    { id: string; order: number }[]
+  >([]);
+  const [selectedImageFiles, setSelectedImageFiles] = useState<
+    { id: string; order: number }[]
+  >([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mock project data - in real app this would come from API/database
@@ -75,12 +80,24 @@ export default function ProjectDetailsPage({
     ],
   };
 
-  const toggleFileSelection = (fileId: string) => {
-    setSelectedFiles((prev) =>
-      prev.includes(fileId)
-        ? prev.filter((id) => id !== fileId)
-        : [...prev, fileId]
-    );
+  const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
+    const setSelectedFiles =
+      fileType === "audio" ? setSelectedAudioFiles : setSelectedImageFiles;
+
+    setSelectedFiles((prev) => {
+      const existingIndex = prev.findIndex((item) => item.id === fileId);
+      if (existingIndex !== -1) {
+        // Remove the file and adjust order numbers
+        const newSelection = prev.filter((item) => item.id !== fileId);
+        return newSelection.map((item, index) => ({
+          ...item,
+          order: index + 1,
+        }));
+      } else {
+        // Add the file with the next order number
+        return [...prev, { id: fileId, order: prev.length + 1 }];
+      }
+    });
   };
 
   const handleUploadClick = () => {
@@ -110,9 +127,11 @@ export default function ProjectDetailsPage({
             <h1 className="text-3xl font-bold text-zinc-900">{project.name}</h1>
           </div>
           <p className="text-zinc-600 mt-1">
-            {selectedFiles.length > 0
-              ? `${selectedFiles.length} file${
-                  selectedFiles.length !== 1 ? "s" : ""
+            {selectedAudioFiles.length + selectedImageFiles.length > 0
+              ? `${selectedAudioFiles.length + selectedImageFiles.length} file${
+                  selectedAudioFiles.length + selectedImageFiles.length !== 1
+                    ? "s"
+                    : ""
                 } selected`
               : "Select files to include in your video"}
           </p>
@@ -130,10 +149,13 @@ export default function ProjectDetailsPage({
             <Plus />
             Upload Files
           </Button>
-          {selectedFiles.length > 0 && (
+          {(selectedAudioFiles.length > 0 || selectedImageFiles.length > 0) && (
             <Button
               variant="outline"
-              onClick={() => setSelectedFiles([])}
+              onClick={() => {
+                setSelectedAudioFiles([]);
+                setSelectedImageFiles([]);
+              }}
               className="text-zinc-600"
             >
               Clear Selection
@@ -167,11 +189,11 @@ export default function ProjectDetailsPage({
               {project.audioFiles.map((file) => (
                 <div
                   key={file.id}
-                  onClick={() => toggleFileSelection(file.id)}
+                  onClick={() => toggleFileSelection(file.id, "audio")}
                   className={`
                       relative aspect-square rounded-lg border-2 cursor-pointer transition-all
                       ${
-                        selectedFiles.includes(file.id)
+                        selectedAudioFiles.some((item) => item.id === file.id)
                           ? "border-zinc-900 bg-zinc-100 shadow-md"
                           : "border-zinc-200 hover:border-zinc-300 bg-white hover:shadow-sm"
                       }
@@ -197,21 +219,20 @@ export default function ProjectDetailsPage({
                       </span>
                     </div>
                   </div>
-                  {selectedFiles.includes(file.id) && (
-                    <div className="absolute top-2 right-2 w-5 h-5 bg-zinc-900 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-3 h-3 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                  {(() => {
+                    const selectedItem = selectedAudioFiles.find(
+                      (item) => item.id === file.id
+                    );
+                    return (
+                      selectedItem && (
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-zinc-900 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-white">
+                            {selectedItem.order}
+                          </span>
+                        </div>
+                      )
+                    );
+                  })()}
                 </div>
               ))}
             </div>
@@ -226,11 +247,11 @@ export default function ProjectDetailsPage({
               {project.imageFiles.map((file) => (
                 <div
                   key={file.id}
-                  onClick={() => toggleFileSelection(file.id)}
+                  onClick={() => toggleFileSelection(file.id, "image")}
                   className={`
                       relative aspect-square rounded-lg border-2 cursor-pointer transition-all overflow-hidden
                       ${
-                        selectedFiles.includes(file.id)
+                        selectedImageFiles.some((item) => item.id === file.id)
                           ? "border-zinc-900 shadow-md"
                           : "border-zinc-200 hover:border-zinc-300 hover:shadow-sm"
                       }
@@ -242,21 +263,20 @@ export default function ProjectDetailsPage({
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0  bg-opacity-0 hover:bg-opacity-10 transition-all"></div>
-                  {selectedFiles.includes(file.id) && (
-                    <div className="absolute top-2 right-2 w-5 h-5 bg-zinc-900 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-3 h-3 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                  {(() => {
+                    const selectedItem = selectedImageFiles.find(
+                      (item) => item.id === file.id
+                    );
+                    return (
+                      selectedItem && (
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-zinc-900 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-white">
+                            {selectedItem.order}
+                          </span>
+                        </div>
+                      )
+                    );
+                  })()}
                 </div>
               ))}
             </div>
@@ -273,27 +293,17 @@ export default function ProjectDetailsPage({
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-zinc-600">Audio files:</span>
-                <span className="font-medium">
-                  {
-                    project.audioFiles.filter((f) =>
-                      selectedFiles.includes(f.id)
-                    ).length
-                  }
-                </span>
+                <span className="font-medium">{selectedAudioFiles.length}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-zinc-600">Image files:</span>
-                <span className="font-medium">
-                  {
-                    project.imageFiles.filter((f) =>
-                      selectedFiles.includes(f.id)
-                    ).length
-                  }
-                </span>
+                <span className="font-medium">{selectedImageFiles.length}</span>
               </div>
               <div className="border-t pt-3 flex justify-between text-sm font-medium">
                 <span>Total selected:</span>
-                <span>{selectedFiles.length}</span>
+                <span>
+                  {selectedAudioFiles.length + selectedImageFiles.length}
+                </span>
               </div>
             </div>
           </div>
@@ -301,9 +311,11 @@ export default function ProjectDetailsPage({
           {/* Render Button */}
           <Button
             className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-4 text-lg font-semibold"
-            disabled={selectedFiles.length === 0}
+            disabled={
+              selectedAudioFiles.length + selectedImageFiles.length === 0
+            }
           >
-            {selectedFiles.length === 0
+            {selectedAudioFiles.length + selectedImageFiles.length === 0
               ? "Select Files to Render"
               : "Render Video"}
           </Button>
