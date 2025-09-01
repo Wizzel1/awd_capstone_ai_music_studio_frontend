@@ -8,7 +8,6 @@ interface UploadResult {
 }
 
 interface UploadOptions {
-  maxFileSize?: number; // in bytes
   allowedTypes?: string[];
 }
 
@@ -19,6 +18,8 @@ if (!process.env.NEXT_PUBLIC_BUCKET_NAME) {
   throw new Error("NEXT_PUBLIC_BUCKET_NAME is not set");
 }
 
+const MAX_FILE_SIZE = 20000000;
+
 export class FileService {
   private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
   private static bucketName = process.env.NEXT_PUBLIC_BUCKET_NAME;
@@ -27,16 +28,13 @@ export class FileService {
     file: File,
     options: UploadOptions = {}
   ): Promise<UploadResult> {
-    const {
-      maxFileSize = 10 * 1024 * 1024, // 10MB default
-      allowedTypes = ["image/*", "audio/*"],
-    } = options;
+    const { allowedTypes = ["image/*", "audio/*"] } = options;
 
     // Client-side validation
-    if (file.size > maxFileSize) {
+    if (file.size > MAX_FILE_SIZE) {
       throw new Error(
         `File ${file.name} is too large. Maximum size is ${Math.round(
-          maxFileSize / (1024 * 1024)
+          MAX_FILE_SIZE / (1024 * 1024)
         )}MB.`
       );
     }
