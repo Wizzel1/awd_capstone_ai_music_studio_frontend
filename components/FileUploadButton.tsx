@@ -5,27 +5,19 @@ import { useRef } from "react";
 
 interface FileUploadButtonProps {
   onUploadSuccess?: (results: any[]) => void;
-  bucketName?: string;
   allowedTypes?: string[];
-  maxFileSize?: number;
   multiple?: boolean;
-  children?: React.ReactNode;
 }
 
 export function FileUploadButton({
   onUploadSuccess,
-  bucketName = "test",
   allowedTypes = ["image/*", "audio/*"],
-  maxFileSize = 10 * 1024 * 1024, // 10MB
   multiple = true,
-  children,
 }: FileUploadButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { isUploading, uploadFromInput } = useFileUpload({
-    bucketName,
     allowedTypes,
-    maxFileSize,
     onSuccess: onUploadSuccess,
   });
 
@@ -52,7 +44,7 @@ export function FileUploadButton({
         ) : (
           <>
             <Plus />
-            {children || "Upload Files"}
+            "Upload Files"
           </>
         )}
       </Button>

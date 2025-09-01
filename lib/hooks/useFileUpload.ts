@@ -31,8 +31,6 @@ export function useFileUpload(options: UploadOptions = {}) {
 
       try {
         const results = await FileService.uploadFiles(files, {
-          bucketName: options.bucketName || "test",
-          maxFileSize: options.maxFileSize || 10 * 1024 * 1024,
           allowedTypes: options.allowedTypes || ["image/*", "audio/*"],
         });
 
