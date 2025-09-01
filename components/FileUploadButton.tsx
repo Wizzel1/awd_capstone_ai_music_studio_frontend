@@ -44,7 +44,7 @@ export function FileUploadButton({
         ) : (
           <>
             <Plus />
-            "Upload Files"
+            Upload Files
           </>
         )}
       </Button>
