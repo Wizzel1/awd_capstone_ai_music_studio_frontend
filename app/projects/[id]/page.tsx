@@ -1,10 +1,12 @@
 "use client";
 
+import { FileUploadButton } from "@/components/FileUploadButton";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface MediaFile {
   id: string;
@@ -100,21 +102,6 @@ export default function ProjectDetailsPage({
     });
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      // Here you would typically upload the files to your server
-      // For now, we'll just log them
-      console.log("Selected files:", Array.from(files));
-      // Reset the input value so the same file can be selected again
-      event.target.value = "";
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Project Header */}
@@ -137,18 +124,12 @@ export default function ProjectDetailsPage({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*,audio/*"
-            onChange={handleFileChange}
-            className="hidden"
+          <FileUploadButton
+            multiple={false}
+            onUploadSuccess={() => {
+              toast.success("Files uploaded successfully");
+            }}
           />
-          <Button onClick={handleUploadClick}>
-            <Plus />
-            Upload Files
-          </Button>
           {(selectedAudioFiles.length > 0 || selectedImageFiles.length > 0) && (
             <Button
               variant="outline"
@@ -163,19 +144,6 @@ export default function ProjectDetailsPage({
           )}
         </div>
       </div>
-
-      {/* Breadcrumbs */}
-      {/* <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Projects</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{project.name}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb> */}
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
         {/* Main Content */}
