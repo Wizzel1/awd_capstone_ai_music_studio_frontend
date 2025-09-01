@@ -14,8 +14,7 @@ interface UploadOptions {
 }
 
 export class FileService {
-  private static baseUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   static async uploadFile(
     file: File,
