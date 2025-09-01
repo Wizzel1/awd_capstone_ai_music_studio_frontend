@@ -94,7 +94,7 @@ export default function ProjectDetailsPage({
       <Breadcrumb className="mb-6">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Project Overview</BreadcrumbLink>
+            <BreadcrumbLink href="/">Projects</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
