@@ -1,4 +1,5 @@
-interface UploadResult {
+//TODO: Use zod to validate the response and move types to a separate file
+export interface UploadResult {
   message: string;
   filename: string;
   originalName: string;
@@ -7,7 +8,7 @@ interface UploadResult {
   mimetype: string;
 }
 
-interface UploadOptions {
+export interface UploadOptions {
   allowedTypes?: string[];
 }
 

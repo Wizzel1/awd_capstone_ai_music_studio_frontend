@@ -1,24 +1,13 @@
-import { FileService } from "@/lib/services/fileService";
+import { FileService, UploadResult } from "@/lib/services/fileService";
 import { useCallback, useState } from "react";
 
-interface UploadResult {
-  message: string;
-  filename: string;
-  originalName: string;
-  bucket: string;
-  size: number;
-  mimetype: string;
-}
-
-interface UploadOptions {
-  bucketName?: string;
-  maxFileSize?: number;
+interface UploadHookOptions {
   allowedTypes?: string[];
   onSuccess?: (results: UploadResult[]) => void;
   onError?: (error: string) => void;
 }
 
-export function useFileUpload(options: UploadOptions = {}) {
+export function useFileUpload(options: UploadHookOptions = {}) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
