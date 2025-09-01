@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="bg-white border-b border-zinc-200 px-6 py-4">
+        <div className="bg-white border-b border-zinc-200 px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/">
@@ -54,7 +54,7 @@ export default function RootLayout({
               </Avatar>
             </div>
           </div>
-          {children}
+          <div className="p-8">{children}</div>
         </div>
       </body>
     </html>

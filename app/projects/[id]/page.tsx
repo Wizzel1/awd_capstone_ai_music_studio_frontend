@@ -89,40 +89,37 @@ export default function ProjectDetailsPage({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="px-6 py-6">
-        {/* Breadcrumbs */}
-        <Breadcrumb className="mb-6">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Project Overview</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{project.name}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <div className="min-h-screen">
+      {/* Breadcrumbs */}
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Project Overview</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{project.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-        {/* Project Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-semibold text-zinc-900">
-            {project.name}
-          </h1>
-        </div>
+      {/* Project Header */}
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-semibold text-zinc-900">{project.name}</h1>
+      </div>
 
-        <div className="flex gap-8">
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Audio Section */}
-            <div className="mb-8">
-              <h2 className="text-lg font-medium text-zinc-900 mb-4">Audio</h2>
-              <div className="grid grid-cols-6 gap-3">
-                {project.audioFiles.map((file) => (
-                  <div
-                    key={file.id}
-                    onClick={() => toggleFileSelection(file.id)}
-                    className={`
+      <div className="flex gap-8">
+        {/* Main Content */}
+        <div className="flex-1">
+          {/* Audio Section */}
+          <div className="mb-8">
+            <h2 className="text-lg font-medium text-zinc-900 mb-4">Audio</h2>
+            <div className="grid grid-cols-6 gap-3">
+              {project.audioFiles.map((file) => (
+                <div
+                  key={file.id}
+                  onClick={() => toggleFileSelection(file.id)}
+                  className={`
                       relative aspect-square rounded-lg border-2 cursor-pointer transition-all
                       ${
                         selectedFiles.includes(file.id)
@@ -130,34 +127,32 @@ export default function ProjectDetailsPage({
                           : "border-zinc-200 hover:border-zinc-300 bg-white"
                       }
                     `}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-8 h-8 bg-zinc-300 rounded mx-auto mb-1"></div>
-                        <span className="text-xs text-zinc-600">
-                          {file.name}
-                        </span>
-                      </div>
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-8 h-8 bg-zinc-300 rounded mx-auto mb-1"></div>
+                      <span className="text-xs text-zinc-600">{file.name}</span>
                     </div>
-                    {selectedFiles.includes(file.id) && (
-                      <div className="absolute top-2 right-2 w-4 h-4 bg-zinc-900 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
                   </div>
-                ))}
-              </div>
+                  {selectedFiles.includes(file.id) && (
+                    <div className="absolute top-2 right-2 w-4 h-4 bg-zinc-900 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Images Section */}
-            <div className="mb-8">
-              <h2 className="text-lg font-medium text-zinc-900 mb-4">Images</h2>
-              <div className="grid grid-cols-6 gap-3">
-                {project.imageFiles.map((file) => (
-                  <div
-                    key={file.id}
-                    onClick={() => toggleFileSelection(file.id)}
-                    className={`
+          {/* Images Section */}
+          <div className="mb-8">
+            <h2 className="text-lg font-medium text-zinc-900 mb-4">Images</h2>
+            <div className="grid grid-cols-6 gap-3">
+              {project.imageFiles.map((file) => (
+                <div
+                  key={file.id}
+                  onClick={() => toggleFileSelection(file.id)}
+                  className={`
                       relative aspect-square rounded-lg border-2 cursor-pointer transition-all overflow-hidden
                       ${
                         selectedFiles.includes(file.id)
@@ -165,34 +160,33 @@ export default function ProjectDetailsPage({
                           : "border-zinc-200 hover:border-zinc-300"
                       }
                     `}
-                  >
-                    <img
-                      src={file.thumbnail || "/placeholder.svg"}
-                      alt={file.name}
-                      className="w-full h-full object-cover"
-                    />
-                    {selectedFiles.includes(file.id) && (
-                      <div className="absolute top-2 right-2 w-4 h-4 bg-zinc-900 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {/* Upload placeholder */}
-                <div className="aspect-square rounded-lg border-2 border-dashed border-zinc-300 bg-zinc-100 flex items-center justify-center cursor-pointer hover:border-zinc-400 transition-colors">
-                  <div className="text-center">
-                    <div className="w-8 h-8 bg-zinc-400 rounded mx-auto mb-1"></div>
-                    <span className="text-xs text-zinc-500">Upload new</span>
-                  </div>
+                >
+                  <img
+                    src={file.thumbnail || "/placeholder.svg"}
+                    alt={file.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {selectedFiles.includes(file.id) && (
+                    <div className="absolute top-2 right-2 w-4 h-4 bg-zinc-900 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {/* Upload placeholder */}
+              <div className="aspect-square rounded-lg border-2 border-dashed border-zinc-300 bg-zinc-100 flex items-center justify-center cursor-pointer hover:border-zinc-400 transition-colors">
+                <div className="text-center">
+                  <div className="w-8 h-8 bg-zinc-400 rounded mx-auto mb-1"></div>
+                  <span className="text-xs text-zinc-500">Upload new</span>
                 </div>
               </div>
             </div>
-
-            {/* Render Button */}
-            <Button className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-4 text-lg">
-              Render Video
-            </Button>
           </div>
+
+          {/* Render Button */}
+          <Button className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-4 text-lg">
+            Render Video
+          </Button>
         </div>
       </div>
     </div>
