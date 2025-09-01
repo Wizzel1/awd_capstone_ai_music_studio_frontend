@@ -1,6 +1,5 @@
 import { NewProjectDialog } from "@/components/NewProjectDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -60,18 +59,6 @@ export default function Dashboard() {
             </Card>
           </Link>
         ))}
-
-        {/* Add New Project Card */}
-        <NewProjectDialog>
-          <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer bg-zinc-50 border-2 border-dashed border-zinc-300 hover:border-zinc-400 hover:-translate-y-1 flex items-center justify-center min-h-[120px]">
-            <div className="text-center">
-              <div className="w-8 h-8 bg-zinc-400 rounded-full mx-auto mb-2 flex items-center justify-center">
-                <Plus className="h-4 w-4 text-white" />
-              </div>
-              <p className="text-sm text-zinc-600 font-medium">New Project</p>
-            </div>
-          </Card>
-        </NewProjectDialog>
       </div>
     </div>
   );

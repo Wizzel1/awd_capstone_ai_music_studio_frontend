@@ -9,8 +9,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface MediaFile {
   id: string;
@@ -26,6 +27,7 @@ export default function ProjectDetailsPage({
 }) {
   const { id: projectId } = useParams();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mock project data - in real app this would come from API/database
   const project = {
@@ -88,21 +90,23 @@ export default function ProjectDetailsPage({
     );
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      // Here you would typically upload the files to your server
+      // For now, we'll just log them
+      console.log("Selected files:", Array.from(files));
+      // Reset the input value so the same file can be selected again
+      event.target.value = "";
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Breadcrumbs */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Projects</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{project.name}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
       {/* Project Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -116,6 +120,18 @@ export default function ProjectDetailsPage({
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*,audio/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button onClick={handleUploadClick}>
+            <Plus />
+            Upload Files
+          </Button>
           {selectedFiles.length > 0 && (
             <Button
               variant="outline"
@@ -127,6 +143,19 @@ export default function ProjectDetailsPage({
           )}
         </div>
       </div>
+
+      {/* Breadcrumbs */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Projects</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{project.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
         {/* Main Content */}
@@ -210,11 +239,11 @@ export default function ProjectDetailsPage({
                     `}
                 >
                   <img
-                    src={file.thumbnail || "/placeholder.svg"}
+                    src={"https://placehold.co/200x200"}
                     alt={file.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all"></div>
+                  <div className="absolute inset-0  bg-opacity-0 hover:bg-opacity-10 transition-all"></div>
                   {selectedFiles.includes(file.id) && (
                     <div className="absolute top-2 right-2 w-5 h-5 bg-zinc-900 rounded-full flex items-center justify-center">
                       <svg
@@ -232,28 +261,6 @@ export default function ProjectDetailsPage({
                   )}
                 </div>
               ))}
-
-              {/* Upload placeholder */}
-              <div className="aspect-square rounded-lg border-2 border-dashed border-zinc-300 bg-zinc-50 flex items-center justify-center cursor-pointer hover:border-zinc-400 hover:bg-zinc-100 transition-all">
-                <div className="text-center">
-                  <div className="w-8 h-8 bg-zinc-400 rounded mx-auto mb-2 flex items-center justify-center">
-                    <svg
-                      className="w-4 h-4 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-xs text-zinc-500 font-medium">
-                    Upload new
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
