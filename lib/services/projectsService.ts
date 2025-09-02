@@ -2,6 +2,8 @@ export type Project = {
   id?: string;
   name: string;
   description?: string;
+  audioFiles?: [];
+  imageFiles?: [];
 };
 
 export class ProjectsService {
