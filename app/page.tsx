@@ -1,30 +1,10 @@
 import { NewProjectDialog } from "@/components/NewProjectDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProjectsService } from "@/lib/services/projectsService";
 import Link from "next/link";
 
-export default function Dashboard() {
-  const projects = [
-    {
-      id: 1,
-      name: "Marriage Video",
-      fileCount: 10,
-    },
-    {
-      id: 2,
-      name: "Project 2",
-      fileCount: 10,
-    },
-    {
-      id: 3,
-      name: "Project 2",
-      fileCount: 10,
-    },
-    {
-      id: 4,
-      name: "Project 2",
-      fileCount: 10,
-    },
-  ];
+export default async function Dashboard() {
+  const projects = await ProjectsService.getProjects();
 
   return (
     <div className="space-y-8">
@@ -52,7 +32,7 @@ export default function Dashboard() {
 
               <CardContent className="pt-0">
                 <div className="flex items-center justify-between text-sm text-zinc-600">
-                  <span>{project.fileCount} Files</span>
+                  {/* <span>{project.fileCount} Files</span> */}
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 </div>
               </CardContent>
