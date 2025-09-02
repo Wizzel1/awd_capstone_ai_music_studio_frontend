@@ -1,3 +1,4 @@
+//TODO: Add proper type
 interface ImageFileCardProps {
   file: any;
   selectedImageFiles: any[];

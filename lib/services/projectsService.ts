@@ -1,3 +1,5 @@
+//TODO: Add proper type
+
 export type Project = {
   id?: string;
   name: string;

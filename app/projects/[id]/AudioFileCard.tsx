@@ -1,3 +1,5 @@
+//TODO: Add proper type
+
 interface AudioCardProps {
   file: any;
   selectedAudioFiles: any[];
