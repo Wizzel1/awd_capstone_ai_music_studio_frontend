@@ -30,4 +30,10 @@ export class ProjectsService {
     const response = await fetch(`${this.baseUrl}/api/v1/projects/${id}`);
     return response.json();
   }
+
+  static async deleteProject(id: string) {
+    return fetch(`${this.baseUrl}/api/v1/projects/${id}`, {
+      method: "DELETE",
+    });
+  }
 }

@@ -24,3 +24,13 @@ export async function createProject(formData: FormData) {
   // You could also redirect to the new project page if needed
   // redirect(`/projects/${newProjectId}`);
 }
+
+export async function deleteProject(formData: FormData) {
+  const projectId = formData.get("projectId") as string;
+  const response = await ProjectsService.deleteProject(projectId);
+  if (response.ok) {
+    revalidatePath("/");
+  } else {
+    throw new Error("Failed to delete project");
+  }
+}
