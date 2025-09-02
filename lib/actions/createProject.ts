@@ -25,12 +25,21 @@ export async function createProject(formData: FormData) {
   // redirect(`/projects/${newProjectId}`);
 }
 
-export async function deleteProject(formData: FormData) {
+export async function deleteProject(prevState: any, formData: FormData) {
   const projectId = formData.get("projectId") as string;
-  const response = await ProjectsService.deleteProject(projectId);
-  if (response.ok) {
-    revalidatePath("/");
-  } else {
-    throw new Error("Failed to delete project");
+
+  try {
+    const response = await ProjectsService.deleteProject(projectId);
+    if (response.ok) {
+      revalidatePath("/");
+      return { success: true, message: "Project deleted successfully!" };
+    } else {
+      return { success: false, message: "Failed to delete project" };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred while deleting the project",
+    };
   }
 }

@@ -4,17 +4,30 @@ import { deleteProject } from "@/lib/actions/createProject";
 import { Project } from "@/lib/services/projectsService";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 export default function ProjectCard({ project }: { project: Project }) {
+  const [state, formAction, isPending] = useActionState(deleteProject, null);
   const deletionFormRef = useRef<HTMLFormElement>(null);
 
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Prevent the button click from triggering the link
     e.preventDefault();
-    deletionFormRef.current?.requestSubmit();
+    //TODO show dialog to confirm deletion
+    if (confirm("Are you sure you want to delete this project?")) {
+      deletionFormRef.current?.requestSubmit();
+    }
   };
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+    } else if (state?.success === false) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
     <>
@@ -24,13 +37,14 @@ export default function ProjectCard({ project }: { project: Project }) {
             <CardTitle className="text-lg font-medium text-zinc-900 group-hover:text-zinc-700">
               {project.name}
             </CardTitle>
-            <form action={deleteProject} ref={deletionFormRef}>
+            <form action={formAction} ref={deletionFormRef}>
               <input type="hidden" name="projectId" value={project.id} />
             </form>
             <Button
               variant="ghost"
               className="cursor-pointer"
               onClick={handleDelete}
+              disabled={isPending}
             >
               <Trash2 className="h-4 w-4 text-red-500" />
             </Button>
