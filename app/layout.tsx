@@ -1,10 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import { Settings } from "lucide-react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL is not set");
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +69,7 @@ export default function RootLayout({
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </main>
+        <Toaster />
       </body>
     </html>
   );
