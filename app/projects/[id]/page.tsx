@@ -2,10 +2,11 @@
 
 import { FileUploadButton } from "@/components/FileUploadButton";
 import { Button } from "@/components/ui/button";
+import { Project, ProjectsService } from "@/lib/services/projectsService";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface MediaFile {
@@ -27,60 +28,16 @@ export default function ProjectDetailsPage({
   const [selectedImageFiles, setSelectedImageFiles] = useState<
     { id: string; order: number }[]
   >([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock project data - in real app this would come from API/database
-  const project = {
-    id: projectId,
-    name: projectId === "1" ? "Marriage Video" : `Project ${projectId}`,
-    progress: 10,
-    audioFiles: [
-      { id: "a1", name: "Audio.wav", type: "audio" as const },
-      { id: "a2", name: "Audio.wav", type: "audio" as const },
-      { id: "a3", name: "Audio.wav", type: "audio" as const },
-      { id: "a4", name: "Audio.wav", type: "audio" as const },
-      { id: "a5", name: "Audio.wav", type: "audio" as const },
-      { id: "a6", name: "Audio.wav", type: "audio" as const },
-    ],
-    imageFiles: [
-      {
-        id: "i1",
-        name: "sunflower1.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-      {
-        id: "i2",
-        name: "sunflower2.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-      {
-        id: "i3",
-        name: "sunflower3.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-      {
-        id: "i4",
-        name: "sunflower4.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-      {
-        id: "i5",
-        name: "sunflower5.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-      {
-        id: "i6",
-        name: "sunflower6.jpg",
-        type: "image" as const,
-        thumbnail: "/single-sunflower.png",
-      },
-    ],
-  };
+  const [project, setProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      const project = await ProjectsService.getProject(projectId as string);
+      setProject(project as Project);
+    };
+    fetchProject();
+  }, [projectId]);
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
     const setSelectedFiles =
@@ -101,6 +58,7 @@ export default function ProjectDetailsPage({
       }
     });
   };
+  if (!project) return <div>Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -154,7 +112,7 @@ export default function ProjectDetailsPage({
               Audio Files
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {project.audioFiles.map((file) => (
+              {/* {project.audioFiles.map((file) => (
                 <div
                   key={file.id}
                   onClick={() => toggleFileSelection(file.id, "audio")}
@@ -202,7 +160,7 @@ export default function ProjectDetailsPage({
                     );
                   })()}
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -212,7 +170,7 @@ export default function ProjectDetailsPage({
               Image Files
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {project.imageFiles.map((file) => (
+              {/* {project.imageFiles.map((file) => (
                 <div
                   key={file.id}
                   onClick={() => toggleFileSelection(file.id, "image")}
@@ -246,7 +204,7 @@ export default function ProjectDetailsPage({
                     );
                   })()}
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
