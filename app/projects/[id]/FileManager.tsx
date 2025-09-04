@@ -2,15 +2,15 @@
 
 import { FileUploadButton } from "@/components/FileUploadButton";
 import { Button } from "@/components/ui/button";
-import { Project } from "@/lib/services/projectsService";
+import { Project } from "@/lib/types/project";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { group } from "radashi";
 import { useState } from "react";
 import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
 import ImageFileCard from "./ImageFileCard";
-
 interface FileManagerProps {
   project: Project;
 }
@@ -24,11 +24,9 @@ export default function FileManager({ project }: FileManagerProps) {
     { id: string; order: number }[]
   >([]);
 
-  const audioFiles = project.assets?.filter(
-    (asset) => asset.format === "audio"
-  );
-  const imageFiles = project.assets?.filter(
-    (asset) => asset.format === "audio"
+  const { audio: audioFiles, image: imageFiles } = group(
+    project.assets,
+    (asset) => asset.format
   );
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
