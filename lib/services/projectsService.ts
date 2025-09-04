@@ -1,11 +1,18 @@
 //TODO: Add proper type
 
+export type Asset = {
+  id: string;
+  name: string;
+  thumbnail?: string;
+  format: string;
+  metadata?: Record<string, any>;
+};
+
 export type Project = {
-  id?: string;
+  id: string;
   name: string;
   description?: string;
-  audioFiles?: [];
-  imageFiles?: [];
+  assets?: Asset[];
 };
 
 export class ProjectsService {
@@ -28,7 +35,9 @@ export class ProjectsService {
 
   static async getProject(id: string): Promise<Project> {
     const response = await fetch(`${this.baseUrl}/api/v1/projects/${id}`);
-    return response.json();
+    const data = await response.json();
+    console.log(data);
+    return data;
   }
 
   static async deleteProject(id: string) {
