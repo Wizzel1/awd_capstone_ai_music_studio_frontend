@@ -74,7 +74,6 @@ export class FileService {
       }
       throw new Error(errorMessage);
     }
-
     return response.json();
   }
 
