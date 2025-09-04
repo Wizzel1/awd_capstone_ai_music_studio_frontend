@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Project } from "@/lib/services/projectsService";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
@@ -15,6 +16,7 @@ interface FileManagerProps {
 }
 
 export default function FileManager({ project }: FileManagerProps) {
+  const router = useRouter();
   const [selectedAudioFiles, setSelectedAudioFiles] = useState<
     { id: string; order: number }[]
   >([]);
@@ -72,8 +74,11 @@ export default function FileManager({ project }: FileManagerProps) {
         <div className="flex items-center gap-3">
           <FileUploadButton
             multiple={false}
+            projectId={project.id}
             onUploadSuccess={() => {
               toast.success("Files uploaded successfully");
+              // Refresh the page to show newly uploaded files
+              router.refresh();
             }}
           />
           {(selectedAudioFiles.length > 0 || selectedImageFiles.length > 0) && (
