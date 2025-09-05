@@ -3,14 +3,17 @@ import { z } from "zod";
 const metadataSchema = z.object({
   size: z.number(),
   duration: z.number().optional(),
-  mimeType: z.string(),
 });
 
 export const assetSchema = z.object({
   id: z.uuid(),
-  name: z.string(),
+  originalName: z.string(),
+  storageName: z.string(),
+  downloadUrl: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
   format: z.enum(["audio", "image"]),
-  metadata: metadataSchema,
+  metadata: metadataSchema.optional(),
 });
 
 export type Asset = z.infer<typeof assetSchema>;
