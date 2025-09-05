@@ -1,7 +1,7 @@
-//TODO: Add proper type
+import { Asset } from "@/lib/types/project";
 interface ImageFileCardProps {
-  file: any;
-  selectedImageFiles: any[];
+  file: Asset;
+  selectedImageFiles: { id: string; order: number }[];
   toggleFileSelection: (fileId: string, fileType: "image") => void;
 }
 
@@ -25,7 +25,7 @@ export default function ImageFileCard({
     >
       <img
         src={"https://placehold.co/200x200"}
-        alt={file.name}
+        alt={file.originalName}
         className="w-full h-full object-cover"
       />
       <div className="absolute inset-0  bg-opacity-0 hover:bg-opacity-10 transition-all"></div>

@@ -1,8 +1,10 @@
 //TODO: Add proper type
 
+import { Asset } from "@/lib/types/project";
+
 interface AudioCardProps {
-  file: any;
-  selectedAudioFiles: any[];
+  file: Asset;
+  selectedAudioFiles: { id: string; order: number }[];
   toggleFileSelection: (fileId: string, fileType: "audio") => void;
 }
 export default function AudioFileCard({
@@ -39,7 +41,9 @@ export default function AudioFileCard({
                 />
               </svg>
             </div>
-            <span className="text-xs text-zinc-600 break-all">{file.name}</span>
+            <span className="text-xs text-zinc-600 break-all">
+              {file.originalName}
+            </span>
           </div>
         </div>
         {(() => {
