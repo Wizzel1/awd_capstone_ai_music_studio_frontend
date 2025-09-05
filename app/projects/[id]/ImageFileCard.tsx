@@ -24,7 +24,7 @@ export default function ImageFileCard({
                 `}
     >
       <img
-        src={"https://placehold.co/200x200"}
+        src={file.downloadUrl}
         alt={file.originalName}
         className="w-full h-full object-cover"
       />
