@@ -1,13 +1,4 @@
-//TODO: Add proper type
-
-export type Project = {
-  id?: string;
-  name: string;
-  description?: string;
-  audioFiles?: [];
-  imageFiles?: [];
-};
-
+import { Project, projectSchema } from "../types/project";
 export class ProjectsService {
   private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -28,7 +19,8 @@ export class ProjectsService {
 
   static async getProject(id: string): Promise<Project> {
     const response = await fetch(`${this.baseUrl}/api/v1/projects/${id}`);
-    return response.json();
+    const data = await response.json();
+    return projectSchema.parse(data);
   }
 
   static async deleteProject(id: string) {

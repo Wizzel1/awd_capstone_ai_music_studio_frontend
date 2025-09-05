@@ -7,7 +7,7 @@ export default async function ProjectDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id: projectId } = await params;
-  const project = await ProjectsService.getProject(projectId as string);
+  const project = await ProjectsService.getProject(projectId);
 
   if (!project) return <div>Loading...</div>;
 

@@ -5,21 +5,26 @@ import { useRef } from "react";
 
 interface FileUploadButtonProps {
   onUploadSuccess?: (results: any[]) => void;
+  projectId: string;
   allowedTypes?: string[];
   multiple?: boolean;
 }
 
 export function FileUploadButton({
   onUploadSuccess,
+  projectId,
   allowedTypes = ["image/*", "audio/*"],
   multiple = true,
 }: FileUploadButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { isUploading, uploadFromInput } = useFileUpload({
-    allowedTypes,
-    onSuccess: onUploadSuccess,
-  });
+  const { isUploading, uploadFromInput } = useFileUpload(
+    {
+      allowedTypes,
+      onSuccess: onUploadSuccess,
+    },
+    projectId
+  );
 
   const handleClick = () => {
     fileInputRef.current?.click();
