@@ -1,6 +1,7 @@
+import { useAudioPlayback } from "@/lib/providers/AudioPlaybackProvider";
 import { Asset } from "@/lib/types/project";
 import { Disc3, Play } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 interface AudioCardProps {
   file: Asset;
@@ -12,23 +13,21 @@ export default function AudioFileCard({
   selectedAudioFiles,
   toggleFileSelection,
 }: AudioCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { setAudioUrl, audioFileId, setAudioFileId, volume, setVolume } =
+    useAudioPlayback();
   const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlayPause = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the card selection
 
-    if (!audioRef.current) return;
-
     try {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
+      if (audioFileId === file.id) {
+        setAudioFileId(null);
+        setAudioUrl(null);
       } else {
         setIsLoading(true);
-        await audioRef.current.play();
-        setIsPlaying(true);
+        setAudioFileId(file.id);
+        setAudioUrl(file.downloadUrl);
       }
     } catch (error) {
       console.error("Error playing audio:", error);
@@ -37,26 +36,8 @@ export default function AudioFileCard({
     }
   };
 
-  const handleAudioEnded = () => {
-    setIsPlaying(false);
-  };
-
-  const handleAudioError = () => {
-    setIsLoading(false);
-    setIsPlaying(false);
-    console.error("Error loading audio file");
-  };
   return (
     <>
-      {/* Hidden audio element */}
-      <audio
-        ref={audioRef}
-        src={file.downloadUrl}
-        onEnded={handleAudioEnded}
-        onError={handleAudioError}
-        preload="metadata"
-      />
-
       <div
         key={file.id}
         onClick={() => toggleFileSelection(file.id, "audio")}
@@ -77,11 +58,11 @@ export default function AudioFileCard({
               onClick={handlePlayPause}
               disabled={isLoading}
               className="w-10 h-10 bg-zinc-300 hover:bg-zinc-400 rounded-md mx-auto mb-2 flex items-center justify-center transition-all disabled:opacity-50"
-              title={isPlaying ? "Pause" : "Play"}
+              title={audioFileId === file.id ? "Pause" : "Play"}
             >
               {isLoading ? (
                 <div className="w-3 h-3 border border-zinc-600 border-t-transparent rounded-full animate-spin" />
-              ) : isPlaying ? (
+              ) : audioFileId === file.id ? (
                 <Disc3 className="w-4 h-4 text-zinc-600 animate-spin" />
               ) : (
                 <Play className="w-4 h-4 text-zinc-600" />

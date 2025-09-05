@@ -2,6 +2,7 @@
 
 import { FileUploadButton } from "@/components/FileUploadButton";
 import { Button } from "@/components/ui/button";
+import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
 import { Project } from "@/lib/types/project";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -102,16 +103,18 @@ export default function FileManager({ project }: FileManagerProps) {
             <h2 className="text-xl font-semibold text-zinc-900 mb-6">
               Audio Files
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {audioFiles?.map((file) => (
-                <AudioFileCard
-                  key={file.id}
-                  file={file}
-                  selectedAudioFiles={selectedAudioFiles}
-                  toggleFileSelection={toggleFileSelection}
-                />
-              ))}
-            </div>
+            <AudioPlaybackProvider>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                {audioFiles?.map((file) => (
+                  <AudioFileCard
+                    key={file.id}
+                    file={file}
+                    selectedAudioFiles={selectedAudioFiles}
+                    toggleFileSelection={toggleFileSelection}
+                  />
+                ))}
+              </div>
+            </AudioPlaybackProvider>
           </div>
 
           {/* Images Section */}
