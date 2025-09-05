@@ -14,9 +14,6 @@ export interface UploadOptions {
 if (!process.env.NEXT_PUBLIC_API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not set");
 }
-if (!process.env.NEXT_PUBLIC_BUCKET_NAME) {
-  throw new Error("NEXT_PUBLIC_BUCKET_NAME is not set");
-}
 
 const MAX_FILE_SIZE = 20000000;
 
