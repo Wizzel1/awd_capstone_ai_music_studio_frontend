@@ -1,22 +1,7 @@
-import { z } from "zod";
-
-/**
- * Environment Variables Configuration
- */
-
-const envSchema = z.object({
-  NEXT_PUBLIC_API_URL: z.url(),
-});
-
 function createEnv() {
-  const parsed = envSchema.safeParse(process.env);
-
-  if (!parsed.success) {
-    const errorTree = z.treeifyError(parsed.error);
-    throw new Error(JSON.stringify(errorTree.properties, null, 2));
-  }
-
-  return parsed.data;
+  const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+  if (!NEXT_PUBLIC_API_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
+  return { NEXT_PUBLIC_API_URL };
 }
 
 export const ENV = createEnv();
