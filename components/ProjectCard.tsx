@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteProject } from "@/lib/actions/createProject";
-import { Project } from "@/lib/services/projectsService";
+import { Project } from "@/lib/types/project";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useEffect, useRef } from "react";
