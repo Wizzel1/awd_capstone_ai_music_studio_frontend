@@ -7,7 +7,10 @@ interface UploadHookOptions {
   onError?: (error: string) => void;
 }
 
-export function useFileUpload(options: UploadHookOptions = {}) {
+export function useFileUpload(
+  options: UploadHookOptions = {},
+  projectId: string
+) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
@@ -19,9 +22,13 @@ export function useFileUpload(options: UploadHookOptions = {}) {
       setUploadError(null);
 
       try {
-        const results = await FileService.uploadFiles(files, {
-          allowedTypes: options.allowedTypes || ["image/*", "audio/*"],
-        });
+        const results = await FileService.uploadFiles(
+          files,
+          projectId as string,
+          {
+            allowedTypes: options.allowedTypes || ["image/*", "audio/*"],
+          }
+        );
 
         options.onSuccess?.(results);
         return results;

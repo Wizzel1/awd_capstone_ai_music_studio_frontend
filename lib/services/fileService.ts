@@ -1,3 +1,4 @@
+import { getApiUrl } from "../env";
 //TODO: Use zod to validate the response and move types to a separate file
 export interface UploadResult {
   message: string;
@@ -7,26 +8,16 @@ export interface UploadResult {
   size: number;
   mimetype: string;
 }
-
 export interface UploadOptions {
   allowedTypes?: string[];
-}
-
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not set");
-}
-if (!process.env.NEXT_PUBLIC_BUCKET_NAME) {
-  throw new Error("NEXT_PUBLIC_BUCKET_NAME is not set");
 }
 
 const MAX_FILE_SIZE = 20000000;
 
 export class FileService {
-  private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  private static bucketName = process.env.NEXT_PUBLIC_BUCKET_NAME;
-
   static async uploadFile(
     file: File,
+    projectId: string,
     options: UploadOptions = {}
   ): Promise<UploadResult> {
     const { allowedTypes = ["image/*", "audio/*"] } = options;
@@ -59,14 +50,10 @@ export class FileService {
 
     const formData = new FormData();
     formData.append("file", file);
-
-    const response = await fetch(
-      `${this.baseUrl}/api/v1/storage/upload/${this.bucketName}`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const response = await fetch(getApiUrl(`/assets/${projectId}`), {
+      method: "POST",
+      body: formData,
+    });
 
     if (!response.ok) {
       let errorMessage = `Upload failed: ${response.statusText}`;
@@ -78,17 +65,17 @@ export class FileService {
       }
       throw new Error(errorMessage);
     }
-
     return response.json();
   }
 
   static async uploadFiles(
     files: File[],
+    projectId: string,
     options: UploadOptions = {}
   ): Promise<UploadResult[]> {
     // Upload files concurrently for better performance
     const uploadPromises = Array.from(files).map((file) =>
-      this.uploadFile(file, options)
+      this.uploadFile(file, projectId, options)
     );
 
     return Promise.all(uploadPromises);
@@ -97,9 +84,10 @@ export class FileService {
   // Helper method for drag & drop scenarios
   static async uploadFromDataTransfer(
     dataTransfer: DataTransfer,
+    projectId: string,
     options: UploadOptions = {}
   ): Promise<UploadResult[]> {
     const files = Array.from(dataTransfer.files);
-    return this.uploadFiles(files, options);
+    return this.uploadFiles(files, projectId, options);
   }
 }
