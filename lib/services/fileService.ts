@@ -1,3 +1,4 @@
+import { getApiUrl } from "../env";
 //TODO: Use zod to validate the response and move types to a separate file
 export interface UploadResult {
   message: string;
@@ -11,15 +12,9 @@ export interface UploadOptions {
   allowedTypes?: string[];
 }
 
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not set");
-}
-
 const MAX_FILE_SIZE = 20000000;
 
 export class FileService {
-  private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
   static async uploadFile(
     file: File,
     projectId: string,
@@ -55,8 +50,7 @@ export class FileService {
 
     const formData = new FormData();
     formData.append("file", file);
-
-    const response = await fetch(`${this.baseUrl}/api/v1/assets/${projectId}`, {
+    const response = await fetch(getApiUrl(`/assets/${projectId}`), {
       method: "POST",
       body: formData,
     });
