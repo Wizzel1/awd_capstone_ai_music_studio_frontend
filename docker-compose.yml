@@ -21,6 +21,8 @@ services:
     networks:
       - frontend-network
     restart: unless-stopped
+    extra_hosts:
+      - "localhost:host-gateway"
 
 networks:
   frontend-network:
