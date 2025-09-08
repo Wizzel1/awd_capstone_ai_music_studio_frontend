@@ -3,6 +3,7 @@
 import { FileUploadButton } from "@/components/FileUploadButton";
 import { Button } from "@/components/ui/button";
 import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
+import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -49,6 +50,15 @@ export default function FileManager({ project }: FileManagerProps) {
       }
     });
   };
+
+  const createTask = async () => {
+    await TaskService.createTask(
+      project.id,
+      selectedAudioFiles.map((file) => file.id),
+      selectedImageFiles.map((file) => file.id)
+    );
+  };
+
   return (
     <>
       {/* Project Header */}
@@ -162,6 +172,7 @@ export default function FileManager({ project }: FileManagerProps) {
 
           {/* Render Button */}
           <Button
+            onClick={createTask}
             className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-4 text-lg font-semibold"
             disabled={
               selectedAudioFiles.length + selectedImageFiles.length === 0
