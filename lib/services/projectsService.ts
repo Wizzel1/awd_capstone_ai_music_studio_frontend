@@ -2,7 +2,7 @@ import { Project, projectSchema } from "../types/project";
 export class ProjectsService {
   private static baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  static async createProject(project: Project) {
+  static async createProject(project: Omit<Project, "id" | "assets">) {
     return fetch(`${this.baseUrl}/api/v1/projects`, {
       method: "POST",
       headers: {
