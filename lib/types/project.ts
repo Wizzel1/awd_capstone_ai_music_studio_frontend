@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taskSchema } from "./task";
 
 const metadataSchema = z.object({
   size: z.number(),
@@ -23,6 +24,7 @@ export const projectSchema = z.object({
   name: z.string(),
   description: z.string(),
   assets: z.array(assetSchema),
+  tasks: z.array(taskSchema).optional(),
 });
 
 export type Project = z.infer<typeof projectSchema>;
