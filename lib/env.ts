@@ -5,18 +5,15 @@ import { z } from "zod";
  */
 
 const envSchema = z.object({
-  NEXT_PUBLIC_API_URL: z.url().default("http://localhost:3001"),
+  NEXT_PUBLIC_API_URL: z.url(),
 });
 
 function createEnv() {
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
-    console.error(
-      "❌ Invalid environment variables:",
-      parsed.error.flatten().fieldErrors
-    );
-    throw new Error("Invalid environment variables");
+    const errorTree = z.treeifyError(parsed.error);
+    throw new Error(JSON.stringify(errorTree.properties, null, 2));
   }
 
   return parsed.data;
