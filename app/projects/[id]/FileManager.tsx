@@ -13,6 +13,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
 import ImageFileCard from "./ImageFileCard";
+import TaskFileCard from "./TaskFileCard";
 interface FileManagerProps {
   project: Project;
 }
@@ -57,6 +58,7 @@ export default function FileManager({ project }: FileManagerProps) {
       selectedAudioFiles.map((file) => file.id),
       selectedImageFiles.map((file) => file.id)
     );
+    router.refresh();
   };
 
   return (
@@ -126,7 +128,6 @@ export default function FileManager({ project }: FileManagerProps) {
               </div>
             </AudioPlaybackProvider>
           </div>
-
           {/* Images Section */}
           <div>
             <h2 className="text-xl font-semibold text-zinc-900 mb-6">
@@ -140,6 +141,15 @@ export default function FileManager({ project }: FileManagerProps) {
                   selectedImageFiles={selectedImageFiles}
                   toggleFileSelection={toggleFileSelection}
                 />
+              ))}
+            </div>
+          </div>
+          {/* Tasks Section */}{" "}
+          <div>
+            <h2 className="text-xl font-semibold text-zinc-900 mb-6">Tasks</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {project.tasks?.map((task) => (
+                <TaskFileCard key={task.id} task={task} />
               ))}
             </div>
           </div>
