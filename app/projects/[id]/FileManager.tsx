@@ -9,7 +9,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { group } from "radashi";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
 import ImageFileCard from "./ImageFileCard";
@@ -31,6 +31,20 @@ export default function FileManager({ project }: FileManagerProps) {
     project.assets,
     (asset) => asset.format
   );
+
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      router.refresh();
+    }, 10000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [router]);
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
     const setSelectedFiles =
