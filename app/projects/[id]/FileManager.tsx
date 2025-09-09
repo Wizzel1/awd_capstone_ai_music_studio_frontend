@@ -32,19 +32,18 @@ export default function FileManager({ project }: FileManagerProps) {
     (asset) => asset.format
   );
 
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
+    timeoutRef.current = setTimeout(() => {
       router.refresh();
     }, 10000);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
-  }, [router]);
+  });
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
     const setSelectedFiles =
