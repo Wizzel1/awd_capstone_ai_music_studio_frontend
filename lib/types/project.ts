@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taskSchema } from "./task";
 
 const metadataSchema = z.object({
   size: z.number(),
@@ -12,7 +13,7 @@ export const assetSchema = z.object({
   downloadUrl: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  format: z.enum(["audio", "image"]),
+  format: z.enum(["audio", "image", "video"]),
   metadata: metadataSchema.optional(),
 });
 
@@ -23,6 +24,7 @@ export const projectSchema = z.object({
   name: z.string(),
   description: z.string(),
   assets: z.array(assetSchema),
+  tasks: z.array(taskSchema).optional(),
 });
 
 export type Project = z.infer<typeof projectSchema>;
