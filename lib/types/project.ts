@@ -13,7 +13,7 @@ export const assetSchema = z.object({
   downloadUrl: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  format: z.enum(["audio", "image"]),
+  format: z.enum(["audio", "image", "video"]),
   metadata: metadataSchema.optional(),
 });
 
