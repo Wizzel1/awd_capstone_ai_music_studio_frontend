@@ -10,7 +10,6 @@ import {
 import { TaskService } from "../services/taskService";
 import { Task } from "../types/task";
 interface UserTaskContextType {
-  userTasks: Task[];
   getTasksForProject: (projectId: string) => Task[];
   refreshTasks: () => void;
 }
@@ -37,9 +36,7 @@ export const UserTaskProvider = ({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const getTasks = useCallback(() => {
-    TaskService.getTasksForUser().then((tasks) => {
-      setUserTasks(tasks);
-    });
+    TaskService.getTasksForUser().then(setUserTasks);
   }, []);
 
   useEffect(() => {
@@ -62,7 +59,7 @@ export const UserTaskProvider = ({
 
   return (
     <UserTaskContext.Provider
-      value={{ userTasks, getTasksForProject, refreshTasks: getTasks }}
+      value={{ getTasksForProject, refreshTasks: getTasks }}
     >
       {children}
     </UserTaskContext.Provider>
