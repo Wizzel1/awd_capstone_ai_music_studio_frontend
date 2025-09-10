@@ -40,7 +40,7 @@ export default function VideoFileCard({ file }: { file: Asset }) {
     <div className="relative aspect-square rounded-lg border-2 cursor-pointer transition-all overflow-hidden border-zinc-200 hover:border-zinc-300 hover:shadow-sm">
       <video
         ref={videoRef}
-        src={"https://www.pexels.com/download/video/6769800/"}
+        src={file.downloadUrl}
         controls
         preload="metadata"
         className="w-full h-full object-cover"
