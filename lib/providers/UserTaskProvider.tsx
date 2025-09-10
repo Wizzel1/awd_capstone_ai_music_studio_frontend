@@ -26,21 +26,24 @@ export const UserTaskProvider = ({
 }) => {
   const [userTasks, setUserTasks] = useState<Task[]>([]);
 
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
+    TaskService.getTasksForUser().then((tasks) => {
+      setUserTasks(tasks);
+    });
+    intervalRef.current = setInterval(() => {
       TaskService.getTasksForUser().then((tasks) => {
         setUserTasks(tasks);
       });
     }, 10000);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
       }
     };
-  });
+  }, []);
   const getTasksForProject = (projectId: string) => {
     return userTasks.filter(
       (task) => task.projectId === projectId && task.status === "running"
