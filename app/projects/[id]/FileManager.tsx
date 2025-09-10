@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
 import ImageFileCard from "./ImageFileCard";
 import TaskFileCard from "./TaskFileCard";
+import VideoFileCard from "./VideoFileCard";
 interface FileManagerProps {
   project: Project;
 }
@@ -27,10 +28,11 @@ export default function FileManager({ project }: FileManagerProps) {
     { id: string; order: number }[]
   >([]);
 
-  const { audio: audioFiles, image: imageFiles } = group(
-    project.assets,
-    (asset) => asset.format
-  );
+  const {
+    audio: audioFiles,
+    image: imageFiles,
+    video: videoFiles,
+  } = group(project.assets, (asset) => asset.format);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -154,6 +156,17 @@ export default function FileManager({ project }: FileManagerProps) {
                   selectedImageFiles={selectedImageFiles}
                   toggleFileSelection={toggleFileSelection}
                 />
+              ))}
+            </div>
+          </div>
+          {/* Video Section */}
+          <div>
+            <h2 className="text-xl font-semibold text-zinc-900 mb-6">
+              Video Files
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {videoFiles?.map((file) => (
+                <VideoFileCard key={file.id} file={file} />
               ))}
             </div>
           </div>
