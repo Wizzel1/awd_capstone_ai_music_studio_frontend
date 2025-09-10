@@ -1,6 +1,7 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteProject } from "@/lib/actions/createProject";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { Project } from "@/lib/types/project";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +12,8 @@ import { Button } from "./ui/button";
 export default function ProjectCard({ project }: { project: Project }) {
   const [state, formAction, isPending] = useActionState(deleteProject, null);
   const deletionFormRef = useRef<HTMLFormElement>(null);
+  const { getTasksForProject } = useUserTasks();
+  const tasks = getTasksForProject(project.id);
 
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Prevent the button click from triggering the link
@@ -54,6 +57,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             <div className="flex items-center justify-between text-sm text-zinc-600">
               {/* <span>{project.fileCount} Files</span> */}
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>{tasks.length} Tasks</span>
             </div>
           </CardContent>
         </Card>
