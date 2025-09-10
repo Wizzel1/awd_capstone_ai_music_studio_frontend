@@ -1,4 +1,5 @@
 import { getApiUrl } from "../env";
+import { taskSchema } from "../types/task";
 
 export class TaskService {
   static async createTask(
@@ -24,5 +25,11 @@ export class TaskService {
     const data = await response.json();
     console.log(data);
     return data;
+  }
+
+  static async getTasksForUser() {
+    const response = await fetch(getApiUrl(`/tasks`));
+    const data = await response.json();
+    return taskSchema.array().parse(data);
   }
 }
