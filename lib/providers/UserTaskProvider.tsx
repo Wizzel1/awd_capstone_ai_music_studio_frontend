@@ -1,10 +1,18 @@
 "use client";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { TaskService } from "../services/taskService";
 import { Task } from "../types/task";
 interface UserTaskContextType {
   userTasks: Task[];
   getTasksForProject: (projectId: string) => Task[];
+  refreshTasks: () => Promise<void>;
 }
 
 const UserTaskContext = createContext<UserTaskContextType | undefined>(
@@ -44,14 +52,23 @@ export const UserTaskProvider = ({
       }
     };
   }, []);
-  const getTasksForProject = (projectId: string) => {
-    return userTasks.filter(
-      (task) => task.projectId === projectId && task.status === "running"
-    );
-  };
+
+  const getTasksForProject = useCallback(
+    (projectId: string) => {
+      return userTasks.filter((task) => task.projectId === projectId);
+    },
+    [userTasks]
+  );
+
+  const refreshTasks = useCallback(async () => {
+    const tasks = await TaskService.getTasksForUser();
+    setUserTasks(tasks);
+  }, []);
 
   return (
-    <UserTaskContext.Provider value={{ userTasks, getTasksForProject }}>
+    <UserTaskContext.Provider
+      value={{ userTasks, getTasksForProject, refreshTasks }}
+    >
       {children}
     </UserTaskContext.Provider>
   );

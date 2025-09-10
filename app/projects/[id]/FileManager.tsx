@@ -4,6 +4,7 @@ import { FileUploadButton } from "@/components/FileUploadButton";
 import TaskSection from "@/components/TaskSection";
 import { Button } from "@/components/ui/button";
 import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { ChevronLeft } from "lucide-react";
@@ -34,6 +35,7 @@ export default function FileManager({ project }: FileManagerProps) {
     image: imageFiles,
     video: videoFiles,
   } = group(project.assets, (asset) => asset.format);
+  const { refreshTasks } = useUserTasks();
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
     const setSelectedFiles =
@@ -56,12 +58,19 @@ export default function FileManager({ project }: FileManagerProps) {
   };
 
   const createTask = async () => {
-    await TaskService.createTask(
+    const { error } = await TaskService.createTask(
       project.id,
       selectedAudioFiles.map((file) => file.id),
       selectedImageFiles.map((file) => file.id)
     );
-    router.refresh();
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success("Task created successfully");
+      setSelectedAudioFiles([]);
+      setSelectedImageFiles([]);
+      await refreshTasks();
+    }
   };
 
   return (

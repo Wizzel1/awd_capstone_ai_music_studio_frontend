@@ -20,11 +20,9 @@ export class TaskService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      return { success: false, error: error.message };
     }
-    const data = await response.json();
-    console.log(data);
-    return data;
+    return { success: true, error: null };
   }
 
   static async getTasksForUser() {
