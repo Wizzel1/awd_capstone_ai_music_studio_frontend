@@ -45,7 +45,6 @@ export default function VideoFileCard({ file }: { file: Asset }) {
         preload="metadata"
         className="w-full h-full object-cover"
         onPlay={handlePlay}
-        controlsList="nodownload"
       />
     </div>
   );
