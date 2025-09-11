@@ -1,4 +1,5 @@
-import { Asset } from "@/lib/types/project";
+import { Asset } from "@/lib/types/asset";
+
 interface ImageFileCardProps {
   file: Asset;
   selectedImageFiles: { id: string; order: number }[];

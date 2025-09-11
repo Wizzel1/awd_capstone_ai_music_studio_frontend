@@ -1,20 +1,22 @@
 "use client";
 
 import { FileUploadButton } from "@/components/FileUploadButton";
+import TaskSection from "@/components/TaskSection";
 import { Button } from "@/components/ui/button";
 import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { group } from "radashi";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import AudioFileCard from "./AudioFileCard";
 import ImageFileCard from "./ImageFileCard";
-import TaskFileCard from "./TaskFileCard";
 import VideoFileCard from "./VideoFileCard";
+
 interface FileManagerProps {
   project: Project;
 }
@@ -33,19 +35,7 @@ export default function FileManager({ project }: FileManagerProps) {
     image: imageFiles,
     video: videoFiles,
   } = group(project.assets, (asset) => asset.format);
-
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      router.refresh();
-    }, 10000);
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  });
+  const { refreshTasks } = useUserTasks();
 
   const toggleFileSelection = (fileId: string, fileType: "audio" | "image") => {
     const setSelectedFiles =
@@ -68,12 +58,19 @@ export default function FileManager({ project }: FileManagerProps) {
   };
 
   const createTask = async () => {
-    await TaskService.createTask(
+    const { error } = await TaskService.createTask(
       project.id,
       selectedAudioFiles.map((file) => file.id),
       selectedImageFiles.map((file) => file.id)
     );
-    router.refresh();
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success("Task created successfully");
+      setSelectedAudioFiles([]);
+      setSelectedImageFiles([]);
+      await refreshTasks();
+    }
   };
 
   return (
@@ -170,15 +167,8 @@ export default function FileManager({ project }: FileManagerProps) {
               ))}
             </div>
           </div>
-          {/* Tasks Section */}{" "}
-          <div>
-            <h2 className="text-xl font-semibold text-zinc-900 mb-6">Tasks</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {project.tasks?.map((task) => (
-                <TaskFileCard key={task.id} task={task} />
-              ))}
-            </div>
-          </div>
+          {/* Tasks Section */}
+          <TaskSection project={project} />
         </div>
 
         {/* Sidebar */}

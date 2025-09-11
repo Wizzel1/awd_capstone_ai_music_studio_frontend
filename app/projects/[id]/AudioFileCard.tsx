@@ -1,5 +1,5 @@
 import { useAudioPlayback } from "@/lib/providers/AudioPlaybackProvider";
-import { Asset } from "@/lib/types/project";
+import { Asset } from "@/lib/types/asset";
 import { Disc3, Play } from "lucide-react";
 import { useState } from "react";
 

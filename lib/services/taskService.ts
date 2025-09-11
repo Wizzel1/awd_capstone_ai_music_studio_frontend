@@ -1,4 +1,5 @@
 import { getApiUrl } from "../env";
+import { taskSchema } from "../types/task";
 
 export class TaskService {
   static async createTask(
@@ -19,10 +20,14 @@ export class TaskService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      return { success: false, error: error.message };
     }
+    return { success: true, error: null };
+  }
+
+  static async getTasksForUser() {
+    const response = await fetch(getApiUrl(`/tasks`));
     const data = await response.json();
-    console.log(data);
-    return data;
+    return taskSchema.array().parse(data);
   }
 }
