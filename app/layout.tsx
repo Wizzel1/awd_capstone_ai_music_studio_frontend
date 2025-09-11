@@ -34,39 +34,41 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50`}
       >
-        {/* Header */}
-        <header className="bg-white border-b border-zinc-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <Link href="/" className="flex items-center space-x-2">
-                  <h1 className="text-xl font-bold text-zinc-900">AI Studio</h1>
-                </Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <NotificationBell />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/next.svg" />
-                  <AvatarFallback className="bg-zinc-200 text-zinc-700 text-sm">
-                    JD
-                  </AvatarFallback>
-                </Avatar>
+        <UserTaskProvider>
+          {/* Header */}
+          <header className="bg-white border-b border-zinc-200 sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div className="flex items-center">
+                  <Link href="/" className="flex items-center space-x-2">
+                    <h1 className="text-xl font-bold text-zinc-900">AI Studio</h1>
+                  </Link>
+                </div>
+                <div className="flex items-center gap-3">
+                  <NotificationBell />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="/next.svg" />
+                    <AvatarFallback className="bg-zinc-200 text-zinc-700 text-sm">
+                      JD
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <UserTaskProvider>{children}</UserTaskProvider>
-        </main>
+          {/* Main Content */}
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {children}
+          </main>
+        </UserTaskProvider>
         <Toaster />
       </body>
     </html>

@@ -30,4 +30,13 @@ export class TaskService {
     const data = await response.json();
     return taskSchema.array().parse(data);
   }
+
+  /**
+   * Create an EventSource connection to receive task updates via SSE
+   */
+  static createTasksSSEConnection(): EventSource {
+    return new EventSource(getApiUrl('/tasks/stream'), {
+      withCredentials: true,
+    });
+  }
 }

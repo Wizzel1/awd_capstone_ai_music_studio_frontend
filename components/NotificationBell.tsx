@@ -1,5 +1,6 @@
 "use client";
 import { getApiUrl } from "@/lib/env";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { Bell, BellDot, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -17,6 +18,7 @@ interface Notification {
 }
 
 export default function NotificationBell() {
+  const { getProjectIdByTaskId } = useUserTasks();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -115,19 +117,25 @@ export default function NotificationBell() {
   const handleNotificationClick = (notificationId: string, taskId: string) => {
     // Mark as read and navigate to project page
     markAsRead(notificationId);
-    window.location.href = `/projects/${taskId}`;
+    if (!taskId) return;
+    const projectId = getProjectIdByTaskId(taskId);
+    if (projectId) {
+      window.location.href = `/projects/${projectId}`;
+    } else {
+      console.warn('Project ID not found for task:', taskId);
+    }
   };
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+        className="relative p-2 rounded-md hover:bg-zinc-100 transition-colors"
       >
         {hasUnreadNotifications ? (
-          <BellDot className="w-6 h-6 text-zinc-600" />
+          <BellDot className="h-4 w-4 text-zinc-600" />
         ) : (
-          <Bell className="w-6 h-6 text-zinc-600" />
+          <Bell className="h-4 w-4 text-zinc-600" />
         )}
       </button>
 
