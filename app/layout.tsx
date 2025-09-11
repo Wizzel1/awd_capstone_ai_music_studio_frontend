@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import NotificationBell from "@/components/NotificationBell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +44,7 @@ export default function RootLayout({
                 </Link>
               </div>
               <div className="flex items-center gap-3">
+                <NotificationBell />
                 <Button
                   variant="ghost"
                   size="sm"
