@@ -44,8 +44,8 @@ export const UserTaskProvider = ({
     intervalRef.current = setInterval(getTasks, 10000);
 
     return () => {
-      if (intervalRef.current) {
-        clearTimeout(intervalRef.current);
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
       }
     };
   }, []);
