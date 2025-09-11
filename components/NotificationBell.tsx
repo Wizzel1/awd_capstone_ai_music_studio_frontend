@@ -1,22 +1,9 @@
 "use client";
 import { getApiUrl } from "@/lib/env";
 import { useUserTasks } from "@/lib/providers/UserTaskProvider";
+import { Notification, notificationSchema } from "@/lib/types/notification";
 import { Bell, BellDot, X } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-
-interface Notification {
-  id: string;
-  userId: string;
-  taskId: string;
-  message: string;
-  status: 'pending' | 'sent' | 'read';
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  sentAt: string | null;
-  readAt: string | null;
-}
-
+import { useEffect, useRef, useState } from "react";
 export default function NotificationBell() {
   const { getProjectIdByTaskId } = useUserTasks();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -29,30 +16,30 @@ export default function NotificationBell() {
     const connectToNotifications = () => {
       // EventSource doesn't support custom headers, so we need to pass auth via URL params or cookies
       // If using JWT, you might need to use fetch with ReadableStream instead
-      const eventSource = new EventSource(getApiUrl('/notifications/stream'), {
+      const eventSource = new EventSource(getApiUrl("/notifications/stream"), {
         withCredentials: true, // Include cookies for authentication
       });
 
       eventSource.onopen = () => {
-        console.log('Connected to notifications stream');
+        console.log("Connected to notifications stream");
         setIsConnected(true);
       };
 
       eventSource.onmessage = (event) => {
         try {
-          const notification: Notification = JSON.parse(event.data);
-          setNotifications(prev => {
+          const notification = notificationSchema.parse(event.data);
+          setNotifications((prev) => {
             // Add new notification at the beginning and remove duplicates
-            const filtered = prev.filter(n => n.id !== notification.id);
+            const filtered = prev.filter((n) => n.id !== notification.id);
             return [notification, ...filtered];
           });
         } catch (error) {
-          console.error('Error parsing notification:', error);
+          console.error("Error parsing notification:", error);
         }
       };
 
       eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
+        console.error("SSE connection error:", error);
         setIsConnected(false);
         // Attempt to reconnect after 5 seconds
         setTimeout(() => {
@@ -75,42 +62,52 @@ export default function NotificationBell() {
     };
   }, []);
 
-  const hasUnreadNotifications = notifications.some(n => n.status !== 'read' && !n.isDeleted);
-  const visibleNotifications = notifications.filter(n => !n.isDeleted);
-  const unreadNotifications = visibleNotifications.filter(n => n.status !== 'read');
-  const readNotifications = visibleNotifications.filter(n => n.status === 'read');
+  const hasUnreadNotifications = notifications.some(
+    (n) => n.status !== "read" && !n.isDeleted
+  );
+  const visibleNotifications = notifications.filter((n) => !n.isDeleted);
+  const unreadNotifications = visibleNotifications.filter(
+    (n) => n.status !== "read"
+  );
+  const readNotifications = visibleNotifications.filter(
+    (n) => n.status === "read"
+  );
 
   const markAsRead = async (notificationId: string) => {
     try {
       await fetch(getApiUrl(`/notifications/${notificationId}/read`), {
-        method: 'PATCH',
-        credentials: 'include',
+        method: "PATCH",
+        credentials: "include",
       });
-      
+
       // Update local state
-      setNotifications(prev => 
-        prev.map(n => 
-          n.id === notificationId 
-            ? { ...n, status: 'read' as const, readAt: new Date().toISOString() }
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId
+            ? {
+                ...n,
+                status: "read" as const,
+                readAt: new Date().toISOString(),
+              }
             : n
         )
       );
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error("Error marking notification as read:", error);
     }
   };
 
   const markAsDeleted = async (notificationId: string) => {
     try {
       await fetch(getApiUrl(`/notifications/${notificationId}/delete`), {
-        method: 'PATCH',
-        credentials: 'include',
+        method: "PATCH",
+        credentials: "include",
       });
-      
+
       // Remove from local state
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
     } catch (error) {
-      console.error('Error marking notification as deleted:', error);
+      console.error("Error marking notification as deleted:", error);
     }
   };
 
@@ -122,7 +119,7 @@ export default function NotificationBell() {
     if (projectId) {
       window.location.href = `/projects/${projectId}`;
     } else {
-      console.warn('Project ID not found for task:', taskId);
+      console.warn("Project ID not found for task:", taskId);
     }
   };
 
@@ -145,7 +142,11 @@ export default function NotificationBell() {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Notifications</h3>
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    isConnected ? "bg-green-500" : "bg-red-500"
+                  }`}
+                ></div>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1 hover:bg-gray-100 rounded"
@@ -168,7 +169,12 @@ export default function NotificationBell() {
                   <div
                     key={notification.id}
                     className="p-4 hover:bg-gray-50 transition-colors cursor-pointer bg-blue-50"
-                    onClick={() => handleNotificationClick(notification.id, notification.taskId)}
+                    onClick={() =>
+                      handleNotificationClick(
+                        notification.id,
+                        notification.taskId
+                      )
+                    }
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
@@ -182,7 +188,7 @@ export default function NotificationBell() {
                           {new Date(notification.createdAt).toLocaleString()}
                         </p>
                       </div>
-                      
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -196,13 +202,18 @@ export default function NotificationBell() {
                     </div>
                   </div>
                 ))}
-                
+
                 {/* Read notifications */}
                 {readNotifications.map((notification) => (
                   <div
                     key={notification.id}
                     className="p-4 hover:bg-gray-50 transition-colors cursor-pointer opacity-60"
-                    onClick={() => handleNotificationClick(notification.id, notification.taskId)}
+                    onClick={() =>
+                      handleNotificationClick(
+                        notification.id,
+                        notification.taskId
+                      )
+                    }
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
@@ -216,7 +227,7 @@ export default function NotificationBell() {
                           {new Date(notification.createdAt).toLocaleString()}
                         </p>
                       </div>
-                      
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
