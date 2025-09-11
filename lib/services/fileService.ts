@@ -15,41 +15,19 @@ export interface UploadOptions {
 const MAX_FILE_SIZE = 20000000;
 
 export class FileService {
-  static async uploadFile(
-    file: File,
-    projectId: string,
-    options: UploadOptions = {}
+  static async uploadFiles(
+    files: FileList,
+    projectId: string
   ): Promise<UploadResult> {
-    const { allowedTypes = ["image/*", "audio/*"] } = options;
-
-    // Client-side validation
-    if (file.size > MAX_FILE_SIZE) {
-      throw new Error(
-        `File ${file.name} is too large. Maximum size is ${Math.round(
-          MAX_FILE_SIZE / (1024 * 1024)
-        )}MB.`
-      );
-    }
-
-    // Check file type
-    const isAllowedType = allowedTypes.some((type) => {
-      if (type.endsWith("/*")) {
-        const category = type.split("/")[0];
-        return file.type.startsWith(category + "/");
-      }
-      return file.type === type;
+    const filteredFiles = Array.from(files).filter((file) => {
+      if (file.size > MAX_FILE_SIZE) return false;
+      return true;
     });
 
-    if (!isAllowedType) {
-      throw new Error(
-        `File type ${
-          file.type
-        } is not allowed. Allowed types: ${allowedTypes.join(", ")}`
-      );
-    }
-
     const formData = new FormData();
-    formData.append("file", file);
+    filteredFiles.forEach((file) => {
+      formData.append("files", file);
+    });
     const response = await fetch(getApiUrl(`/assets/${projectId}`), {
       method: "POST",
       body: formData,
@@ -68,26 +46,11 @@ export class FileService {
     return response.json();
   }
 
-  static async uploadFiles(
-    files: File[],
-    projectId: string,
-    options: UploadOptions = {}
-  ): Promise<UploadResult[]> {
-    // Upload files concurrently for better performance
-    const uploadPromises = Array.from(files).map((file) =>
-      this.uploadFile(file, projectId, options)
-    );
-
-    return Promise.all(uploadPromises);
-  }
-
   // Helper method for drag & drop scenarios
   static async uploadFromDataTransfer(
     dataTransfer: DataTransfer,
-    projectId: string,
-    options: UploadOptions = {}
-  ): Promise<UploadResult[]> {
-    const files = Array.from(dataTransfer.files);
-    return this.uploadFiles(files, projectId, options);
+    projectId: string
+  ) {
+    return this.uploadFiles(dataTransfer.files, projectId);
   }
 }
