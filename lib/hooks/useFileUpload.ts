@@ -2,7 +2,6 @@ import { FileService, UploadResult } from "@/lib/services/fileService";
 import { useCallback, useState } from "react";
 
 interface UploadHookOptions {
-  allowedTypes?: string[];
   onSuccess?: (results: UploadResult[]) => void;
   onError?: (error: string) => void;
 }
@@ -15,7 +14,7 @@ export function useFileUpload(
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const uploadFiles = useCallback(
-    async (files: File[]) => {
+    async (files: FileList) => {
       if (!files || files.length === 0) return;
 
       setIsUploading(true);
@@ -24,13 +23,10 @@ export function useFileUpload(
       try {
         const results = await FileService.uploadFiles(
           files,
-          projectId as string,
-          {
-            allowedTypes: options.allowedTypes || ["image/*", "audio/*"],
-          }
+          projectId as string
         );
 
-        options.onSuccess?.(results);
+        options.onSuccess?.([results]);
         return results;
       } catch (error) {
         const errorMessage =
@@ -49,7 +45,7 @@ export function useFileUpload(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
       if (files) {
-        await uploadFiles(Array.from(files));
+        await uploadFiles(files);
         // Reset input value so same file can be selected again
         event.target.value = "";
       }
