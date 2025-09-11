@@ -13,16 +13,11 @@ interface FileUploadButtonProps {
 export function FileUploadButton({
   onUploadSuccess,
   projectId,
-  allowedTypes = ["image/*", "audio/*"],
-  multiple = true,
 }: FileUploadButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { isUploading, uploadFromInput } = useFileUpload(
-    {
-      allowedTypes,
-      onSuccess: onUploadSuccess,
-    },
+    { onSuccess: onUploadSuccess },
     projectId
   );
 
@@ -35,8 +30,8 @@ export function FileUploadButton({
       <input
         ref={fileInputRef}
         type="file"
-        multiple={multiple}
-        accept={allowedTypes.join(",")}
+        multiple
+        accept={["image/*", "audio/*"].join(",")}
         onChange={uploadFromInput}
         className="hidden"
       />
