@@ -27,7 +27,8 @@ export default function NotificationBell() {
 
       eventSource.onmessage = (event) => {
         try {
-          const notification = notificationSchema.parse(event.data);
+          const data = JSON.parse(event.data);
+          const notification = notificationSchema.parse(data);
           setNotifications((prev) => {
             // Add new notification at the beginning and remove duplicates
             const filtered = prev.filter((n) => n.id !== notification.id);
