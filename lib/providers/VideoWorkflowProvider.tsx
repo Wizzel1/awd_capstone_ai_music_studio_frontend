@@ -36,11 +36,12 @@ type WorkflowAction =
   | { type: "SET_GENERATING"; payload: boolean }
   | { type: "RESET_WORKFLOW" };
 
-// Workflow step order
+// Workflow step order - all possible steps
 const stepOrder = [
   WorkflowStep.IMAGE_SELECTION,
   WorkflowStep.AUDIO_METHOD,
-  WorkflowStep.AI_AUDIO_GENERATION, // or AUDIO_FILE_SELECTION
+  WorkflowStep.AI_AUDIO_GENERATION,
+  WorkflowStep.AUDIO_FILE_SELECTION,
   WorkflowStep.VIDEO_GENERATION,
 ];
 
@@ -81,7 +82,24 @@ function workflowReducer(
     case "PREVIOUS_STEP": {
       const currentIndex = stepOrder.indexOf(state.currentStep);
       if (currentIndex > 0) {
-        const prevStep = stepOrder[currentIndex - 1];
+        let prevStep = stepOrder[currentIndex - 1];
+
+        // Handle conditional previous step logic
+        if (state.currentStep === WorkflowStep.VIDEO_GENERATION) {
+          // If coming from video generation, go back to the appropriate audio step
+          if (state.audioMethod === AudioMethod.AI_GENERATION) {
+            prevStep = WorkflowStep.AI_AUDIO_GENERATION;
+          } else if (state.audioMethod === AudioMethod.FILE_UPLOAD) {
+            prevStep = WorkflowStep.AUDIO_FILE_SELECTION;
+          }
+        } else if (state.currentStep === WorkflowStep.AUDIO_FILE_SELECTION) {
+          // From audio file selection, always go back to audio method
+          prevStep = WorkflowStep.AUDIO_METHOD;
+        } else if (state.currentStep === WorkflowStep.AI_AUDIO_GENERATION) {
+          // From AI audio generation, always go back to audio method
+          prevStep = WorkflowStep.AUDIO_METHOD;
+        }
+
         return { ...state, currentStep: prevStep };
       }
       return state;
