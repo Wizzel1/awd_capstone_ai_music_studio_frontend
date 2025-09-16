@@ -100,7 +100,7 @@ export default function AudioMethodSelection() {
                 </div>
 
                 {/* Features List */}
-                <div className="space-y-2">
+                <div className="space-y-2 mb-4">
                   {method.features.map((feature, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
@@ -109,9 +109,18 @@ export default function AudioMethodSelection() {
                   ))}
                 </div>
 
-                {/* Visual Indicator */}
-                <div className="mt-6 pt-4 border-t border-zinc-100">
-                  <div className="flex items-center justify-center space-x-2 text-zinc-400">
+                {/* Use Case Description */}
+                <div className="mb-4 p-3 bg-zinc-50 rounded-lg">
+                  <p className="text-sm text-zinc-700">
+                    {method.id === AudioMethod.AI_GENERATION
+                      ? "Perfect when you have lyrics but need music to go with them. Create custom audio that matches your video's mood."
+                      : "Ideal when you already have audio files or want full control over the sound. Upload your own tracks or use existing project audio."}
+                  </p>
+                </div>
+
+                {/* Status and Next Step */}
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-100">
+                  <div className="flex items-center space-x-2 text-zinc-400">
                     {method.id === AudioMethod.AI_GENERATION ? (
                       <>
                         <Mic className="w-4 h-4" />
@@ -124,45 +133,20 @@ export default function AudioMethodSelection() {
                       </>
                     )}
                   </div>
+                  {isSelected && (
+                    <span className="text-xs font-medium text-green-600">
+                      Next:{" "}
+                      {method.id === AudioMethod.AI_GENERATION
+                        ? "Write lyrics"
+                        : "Select audio files"}
+                    </span>
+                  )}
                 </div>
               </CardContent>
             </Card>
           );
         })}
       </div>
-
-      {/* Additional Info */}
-      <div className="bg-zinc-50 rounded-lg p-6 max-w-2xl mx-auto">
-        <div className="text-center">
-          <h4 className="font-medium text-zinc-900 mb-2">
-            Need help deciding?
-          </h4>
-          <div className="space-y-2 text-sm text-zinc-600">
-            <p>
-              <strong>AI Generation</strong> is perfect when you have lyrics but
-              need music to go with them.
-            </p>
-            <p>
-              <strong>File Upload</strong> is ideal when you already have audio
-              files or want full control over the sound.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Selection Confirmation */}
-      {audioMethod && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-2xl mx-auto">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-sm font-medium text-green-800">
-              {audioMethod === AudioMethod.AI_GENERATION
-                ? "AI Generation selected - You'll write lyrics in the next step"
-                : "File Upload selected - You'll choose audio files in the next step"}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
