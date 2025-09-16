@@ -234,26 +234,6 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
           </p>
         </div>
       )}
-
-      {/* Selection Summary */}
-      {selectedImages.length > 0 && (
-        <div className="bg-zinc-50 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-zinc-900">
-                {selectedImages.length} image
-                {selectedImages.length !== 1 ? "s" : ""} selected
-              </h4>
-              <p className="text-sm text-zinc-600">
-                Images will appear in your video in the order selected
-              </p>
-            </div>
-            <Badge variant="secondary">
-              {selectedImages.length}/{imageAssets.length}
-            </Badge>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

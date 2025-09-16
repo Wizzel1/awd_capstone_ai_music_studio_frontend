@@ -17,7 +17,7 @@ interface WorkflowManagerProps {
 }
 
 export default function WorkflowManager({ project }: WorkflowManagerProps) {
-  const { state } = useVideoWorkflow();
+  const { state, actions } = useVideoWorkflow();
   const { currentStep } = state;
 
   const renderCurrentStep = () => {
@@ -53,7 +53,7 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
       <StepProgress />
 
       {/* Main Content Area */}
-      <div className="flex-1 px-6 py-8 overflow-hidden">
+      <div className="flex-1 p-6 overflow-hidden">
         <div className="max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div

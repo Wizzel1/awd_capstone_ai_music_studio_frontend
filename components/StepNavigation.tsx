@@ -29,23 +29,6 @@ export default function StepNavigation() {
     }
   };
 
-  const getProceedMessage = () => {
-    switch (currentStep) {
-      case WorkflowStep.IMAGE_SELECTION:
-        return "Select at least one image to continue";
-      case WorkflowStep.AUDIO_METHOD:
-        return "Choose an audio method to continue";
-      case WorkflowStep.AI_AUDIO_GENERATION:
-        return "Enter lyrics to generate audio";
-      case WorkflowStep.AUDIO_FILE_SELECTION:
-        return "Select at least one audio file to continue";
-      case WorkflowStep.VIDEO_GENERATION:
-        return "Ready to generate your video";
-      default:
-        return "Complete this step to continue";
-    }
-  };
-
   return (
     <div className="border-t bg-white px-6 py-4">
       <div className="flex items-center justify-between max-w-4xl mx-auto">
@@ -61,11 +44,6 @@ export default function StepNavigation() {
               Previous
             </Button>
           )}
-        </div>
-
-        {/* Status Message */}
-        <div className="flex-1 text-center">
-          <p className="text-sm text-zinc-600">{getProceedMessage()}</p>
         </div>
 
         {/* Next Button */}

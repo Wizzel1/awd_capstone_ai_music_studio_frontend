@@ -128,62 +128,11 @@ Nothing will ever be the same`;
       <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* Left Column - Input */}
         <div className="space-y-6">
-          {/* Generate Lyrics from Images */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-900">
-              Generate Lyrics from Your Images
-            </label>
-            <div className="p-4 border-2 border-dashed border-zinc-200 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm font-medium text-zinc-900">
-                    AI Lyrics Generation
-                  </span>
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {selectedImages.length} images selected
-                </Badge>
-              </div>
-              <p className="text-sm text-zinc-600 mb-4">
-                Let AI analyze your selected images and create lyrics that match
-                the visual story and mood.
-              </p>
-              <Button
-                onClick={handleGenerateLyrics}
-                disabled={selectedImages.length === 0 || isGeneratingLyrics}
-                variant="outline"
-                className="w-full"
-              >
-                {isGeneratingLyrics ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    >
-                      <Sparkles className="w-4 h-4 mr-2" />
-                    </motion.div>
-                    Analyzing images and generating lyrics...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Generate Lyrics from Images
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-
           {/* Lyrics Input */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium text-zinc-900">
-                Lyrics {lyrics && "(Generated or Custom)"}
+                Lyrics
               </label>
               <span
                 className={`text-xs ${
@@ -197,7 +146,7 @@ Nothing will ever be the same`;
               placeholder="Generate lyrics from your images above, or write your own lyrics here...&#10;&#10;Verse 1:&#10;Your story begins here&#10;With words that inspire&#10;&#10;Chorus:&#10;Sing your heart out loud&#10;Let the music flow..."
               value={lyrics || ""}
               onChange={(e) => handleLyricsChange(e.target.value)}
-              className="min-h-48 resize-none"
+              className="min-h-72 resize-none"
               maxLength={maxChars}
             />
             {!isValidLyrics && charCount > 0 && (
@@ -279,36 +228,56 @@ Nothing will ever be the same`;
 
         {/* Right Column - Preview/Output */}
         <div className="space-y-6">
-          {/* Configuration Summary */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-zinc-900 mb-3">Configuration</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Lyrics length:</span>
-                  <Badge variant="outline">{charCount} characters</Badge>
+          {/* Generate Lyrics from Images */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-zinc-900">
+              Generate Lyrics from Your Images
+            </label>
+            <div className="p-4 border-2 border-dashed border-zinc-200 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm font-medium text-zinc-900">
+                    AI Lyrics Generation
+                  </span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Music style:</span>
-                  <Badge variant="outline">
-                    {selectedStyle
-                      ? musicStyles.find((s) => s.value === selectedStyle)
-                          ?.label
-                      : "Not selected"}
-                  </Badge>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Mood:</span>
-                  <Badge variant="outline">
-                    {selectedMood
-                      ? moods.find((m) => m.value === selectedMood)?.label
-                      : "Not selected"}
-                  </Badge>
-                </div>
+                <Badge variant="outline" className="text-xs">
+                  {selectedImages.length} images selected
+                </Badge>
               </div>
-            </CardContent>
-          </Card>
-
+              <p className="text-sm text-zinc-600 mb-4">
+                Let AI analyze your selected images and create lyrics that match
+                the visual story and mood.
+              </p>
+              <Button
+                onClick={handleGenerateLyrics}
+                disabled={selectedImages.length === 0 || isGeneratingLyrics}
+                variant="outline"
+                className="w-full"
+              >
+                {isGeneratingLyrics ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    </motion.div>
+                    Analyzing images and generating lyrics...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generate Lyrics from Images
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
           {/* Generated Audio Preview */}
           <AnimatePresence>
             {generatedAudioId && (
@@ -374,42 +343,6 @@ Nothing will ever be the same`;
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Tips */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-zinc-900 mb-3">
-                Tips for better results
-              </h3>
-              <div className="space-y-2 text-sm text-zinc-600">
-                <div className="flex items-start space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>
-                    Use AI lyrics generation to create content that matches your
-                    images
-                  </span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>
-                    Keep lyrics between 50-500 characters for best results
-                  </span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>Edit generated lyrics to personalize your message</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>Match the mood with your video content</span>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>Generation typically takes 30-60 seconds</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
