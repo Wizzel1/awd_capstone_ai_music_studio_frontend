@@ -14,9 +14,9 @@ const initialState: WorkflowState = {
   currentStep: WorkflowStep.IMAGE_SELECTION,
   selectedImages: [],
   audioMethod: undefined,
-  selectedAudio: [],
+  selectedAudios: [],
   lyrics: undefined,
-  generatedAudioId: undefined,
+  generatedAudios: [],
   isGenerating: false,
   canProceed: false,
 };
@@ -32,7 +32,7 @@ type WorkflowAction =
   | { type: "SELECT_AUDIO"; payload: Asset }
   | { type: "REMOVE_AUDIO"; payload: string }
   | { type: "SET_LYRICS"; payload: string }
-  | { type: "SET_GENERATED_AUDIO"; payload: string }
+  | { type: "SET_GENERATED_AUDIO"; payload: Asset }
   | { type: "SET_GENERATING"; payload: boolean }
   | { type: "RESET_WORKFLOW" };
 
@@ -148,7 +148,7 @@ function workflowReducer(
       };
 
     case "SELECT_AUDIO": {
-      const existingIndex = state.selectedAudio.findIndex(
+      const existingIndex = state.selectedAudios.findIndex(
         (audio) => audio.asset.id === action.payload.id
       );
       if (existingIndex !== -1) {
@@ -157,26 +157,26 @@ function workflowReducer(
 
       const newSelection = {
         id: action.payload.id,
-        order: state.selectedAudio.length + 1,
+        order: state.selectedAudios.length + 1,
         asset: action.payload,
       };
 
-      const newSelectedAudio = [...state.selectedAudio, newSelection];
+      const newSelectedAudio = [...state.selectedAudios, newSelection];
       return {
         ...state,
-        selectedAudio: newSelectedAudio,
+        selectedAudios: newSelectedAudio,
         canProceed: newSelectedAudio.length > 0,
       };
     }
 
     case "REMOVE_AUDIO": {
-      const newSelectedAudio = state.selectedAudio
+      const newSelectedAudio = state.selectedAudios
         .filter((audio) => audio.asset.id !== action.payload)
         .map((audio, index) => ({ ...audio, order: index + 1 }));
 
       return {
         ...state,
-        selectedAudio: newSelectedAudio,
+        selectedAudios: newSelectedAudio,
         canProceed: newSelectedAudio.length > 0,
       };
     }
@@ -191,7 +191,7 @@ function workflowReducer(
     case "SET_GENERATED_AUDIO":
       return {
         ...state,
-        generatedAudioId: action.payload,
+        generatedAudios: [...state.generatedAudios, action.payload],
         canProceed: true,
       };
 
@@ -242,8 +242,8 @@ export function VideoWorkflowProvider({
       dispatch({ type: "REMOVE_AUDIO", payload: assetId }),
     setLyrics: (lyrics: string) =>
       dispatch({ type: "SET_LYRICS", payload: lyrics }),
-    setGeneratedAudio: (audioId: string) =>
-      dispatch({ type: "SET_GENERATED_AUDIO", payload: audioId }),
+    addGeneratedAudio: (audio: Asset) =>
+      dispatch({ type: "SET_GENERATED_AUDIO", payload: audio }),
     resetWorkflow: () => dispatch({ type: "RESET_WORKFLOW" }),
   };
 

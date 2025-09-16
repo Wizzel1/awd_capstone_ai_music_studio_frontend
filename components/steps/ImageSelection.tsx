@@ -3,22 +3,25 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
+import { FileService } from "@/lib/services/fileService";
 import { Asset } from "@/lib/types/asset";
+import { Project } from "@/lib/types/project";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Image as ImageIcon, Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface ImageSelectionProps {
-  project: {
-    assets: Asset[];
-  };
+  project: Project;
 }
 
 export default function ImageSelection({ project }: ImageSelectionProps) {
   const { state, actions } = useVideoWorkflow();
   const { selectedImages } = state;
+
+  const router = useRouter();
 
   // Filter only image assets
   const imageAssets = project.assets.filter(
@@ -26,8 +29,7 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
   );
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Files dropped:", acceptedFiles);
-    // TODO: Handle file upload in Phase 4
+    FileService.uploadFiles(acceptedFiles, project.id).then(router.refresh);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

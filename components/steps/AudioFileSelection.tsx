@@ -19,7 +19,7 @@ export default function AudioFileSelection({
   project,
 }: AudioFileSelectionProps) {
   const { state, actions } = useVideoWorkflow();
-  const { selectedAudio } = state;
+  const { selectedAudios } = state;
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   // Filter only audio assets
@@ -41,11 +41,13 @@ export default function AudioFileSelection({
   });
 
   const isSelected = (assetId: string) => {
-    return selectedAudio.some((audio) => audio.asset.id === assetId);
+    return selectedAudios.some((audio) => audio.asset.id === assetId);
   };
 
   const getSelectionOrder = (assetId: string) => {
-    const selection = selectedAudio.find((audio) => audio.asset.id === assetId);
+    const selection = selectedAudios.find(
+      (audio) => audio.asset.id === assetId
+    );
     return selection?.order;
   };
 
@@ -121,12 +123,12 @@ export default function AudioFileSelection({
             <h3 className="text-lg font-semibold text-zinc-900">
               Project Audio ({audioAssets.length})
             </h3>
-            {selectedAudio.length > 0 && (
+            {selectedAudios.length > 0 && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  selectedAudio.forEach((audio) =>
+                  selectedAudios.forEach((audio) =>
                     actions.removeAudio(audio.asset.id)
                   );
                 }}
@@ -288,13 +290,13 @@ export default function AudioFileSelection({
       )}
 
       {/* Selection Summary */}
-      {selectedAudio.length > 0 && (
+      {selectedAudios.length > 0 && (
         <div className="bg-zinc-50 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-medium text-zinc-900">
-                {selectedAudio.length} audio file
-                {selectedAudio.length !== 1 ? "s" : ""} selected
+                {selectedAudios.length} audio file
+                {selectedAudios.length !== 1 ? "s" : ""} selected
               </h4>
               <p className="text-sm text-zinc-600">
                 Audio will play in sequence in the order selected
@@ -302,11 +304,11 @@ export default function AudioFileSelection({
             </div>
             <div className="text-right">
               <Badge variant="secondary">
-                {selectedAudio.length}/{audioAssets.length}
+                {selectedAudios.length}/{audioAssets.length}
               </Badge>
               <p className="text-xs text-zinc-500 mt-1">
                 Total:{" "}
-                {selectedAudio.reduce(
+                {selectedAudios.reduce(
                   (acc, audio) => acc + (audio.asset.metadata?.duration || 0),
                   0
                 )}

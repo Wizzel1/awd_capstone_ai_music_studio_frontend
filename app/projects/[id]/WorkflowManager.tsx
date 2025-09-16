@@ -17,14 +17,16 @@ interface WorkflowManagerProps {
 }
 
 export default function WorkflowManager({ project }: WorkflowManagerProps) {
-  const { state, actions } = useVideoWorkflow();
+  const { state } = useVideoWorkflow();
   const { currentStep } = state;
 
   const renderCurrentStep = () => {
     const stepComponents = {
       [WorkflowStep.IMAGE_SELECTION]: <ImageSelection project={project} />,
       [WorkflowStep.AUDIO_METHOD]: <AudioMethodSelection />,
-      [WorkflowStep.AI_AUDIO_GENERATION]: <AIAudioGeneration />,
+      [WorkflowStep.AI_AUDIO_GENERATION]: (
+        <AIAudioGeneration project={project} />
+      ),
       [WorkflowStep.AUDIO_FILE_SELECTION]: (
         <AudioFileSelection project={project} />
       ),

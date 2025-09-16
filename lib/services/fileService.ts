@@ -16,7 +16,7 @@ const MAX_FILE_SIZE = 20000000;
 
 export class FileService {
   static async uploadFiles(
-    files: FileList,
+    files: File[],
     projectId: string
   ): Promise<UploadResult> {
     const filteredFiles = Array.from(files).filter((file) => {
@@ -44,13 +44,5 @@ export class FileService {
       throw new Error(errorMessage);
     }
     return response.json();
-  }
-
-  // Helper method for drag & drop scenarios
-  static async uploadFromDataTransfer(
-    dataTransfer: DataTransfer,
-    projectId: string
-  ) {
-    return this.uploadFiles(dataTransfer.files, projectId);
   }
 }
