@@ -3,6 +3,24 @@ import { Asset } from "@/lib/types/asset";
 import { Disc3, Play } from "lucide-react";
 import { useState } from "react";
 
+/**
+ * Formats the time in seconds into a readable format
+ * @param {number} seconds - Time in seconds
+ * @returns {string} - Formatted time
+ */
+function formatDuration(seconds: number): string {
+  if (!seconds || isNaN(seconds)) return '0:00';
+  
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}
+
 interface AudioCardProps {
   file: Asset;
   selectedAudioFiles: { id: string; order: number }[];
@@ -36,6 +54,10 @@ export default function AudioFileCard({
     }
   };
 
+  // duration from seconds to human readable format
+  const fileDuration = file.metadata?.duration
+    ? formatDuration(file.metadata.duration)
+    : null;
   return (
     <>
       <div
@@ -43,11 +65,10 @@ export default function AudioFileCard({
         onClick={() => toggleFileSelection(file.id, "audio")}
         className={`
                   relative aspect-square rounded-lg border-2 cursor-pointer transition-all
-                  ${
-                    selectedAudioFiles.some((item) => item.id === file.id)
-                      ? "border-zinc-900 bg-zinc-100 shadow-md"
-                      : "border-zinc-200 hover:border-zinc-300 bg-white hover:shadow-sm"
-                  }
+                  ${selectedAudioFiles.some((item) => item.id === file.id)
+            ? "border-zinc-900 bg-zinc-100 shadow-md"
+            : "border-zinc-200 hover:border-zinc-300 bg-white hover:shadow-sm"
+          }
                   
                 `}
       >
@@ -71,6 +92,11 @@ export default function AudioFileCard({
             <span className="text-xs text-zinc-600 break-all">
               {file.originalName}
             </span>
+            {fileDuration && (
+              <span className="text-xs text-zinc-400 block">
+                {fileDuration}
+              </span>
+            )}
           </div>
         </div>
         {(() => {
