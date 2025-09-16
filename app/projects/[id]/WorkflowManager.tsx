@@ -10,6 +10,7 @@ import VideoGenerationSummary from "@/components/steps/VideoGenerationSummary";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { Project } from "@/lib/types/project";
 import { WorkflowStep } from "@/lib/types/workflow";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface WorkflowManagerProps {
   project: Project;
@@ -20,20 +21,20 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
   const { currentStep } = state;
 
   const renderCurrentStep = () => {
-    switch (currentStep) {
-      case WorkflowStep.IMAGE_SELECTION:
-        return <ImageSelection project={project} />;
-      case WorkflowStep.AUDIO_METHOD:
-        return <AudioMethodSelection />;
-      case WorkflowStep.AI_AUDIO_GENERATION:
-        return <AIAudioGeneration />;
-      case WorkflowStep.AUDIO_FILE_SELECTION:
-        return <AudioFileSelection project={project} />;
-      case WorkflowStep.VIDEO_GENERATION:
-        return <VideoGenerationSummary />;
-      default:
-        return <ImageSelection project={project} />;
-    }
+    const stepComponents = {
+      [WorkflowStep.IMAGE_SELECTION]: <ImageSelection project={project} />,
+      [WorkflowStep.AUDIO_METHOD]: <AudioMethodSelection />,
+      [WorkflowStep.AI_AUDIO_GENERATION]: <AIAudioGeneration />,
+      [WorkflowStep.AUDIO_FILE_SELECTION]: (
+        <AudioFileSelection project={project} />
+      ),
+      [WorkflowStep.VIDEO_GENERATION]: <VideoGenerationSummary />,
+    };
+
+    return (
+      stepComponents[currentStep] ||
+      stepComponents[WorkflowStep.IMAGE_SELECTION]
+    );
   };
 
   return (
@@ -52,8 +53,23 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
       <StepProgress />
 
       {/* Main Content Area */}
-      <div className="flex-1 px-6 py-8">
-        <div className="max-w-4xl mx-auto">{renderCurrentStep()}</div>
+      <div className="flex-1 px-6 py-8 overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+            >
+              {renderCurrentStep()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Navigation */}

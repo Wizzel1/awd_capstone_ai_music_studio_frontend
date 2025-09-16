@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { Asset } from "@/lib/types/asset";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { Image as ImageIcon, Upload, X } from "lucide-react";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
@@ -112,16 +113,42 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {imageAssets.map((asset) => {
+          <motion.div
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+          >
+            {imageAssets.map((asset, index) => {
               const selected = isSelected(asset.id);
               const order = getSelectionOrder(asset.id);
 
               return (
-                <div
+                <motion.div
                   key={asset.id}
                   className="relative group cursor-pointer"
                   onClick={() => handleImageClick(asset)}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.3,
+                        ease: "easeOut",
+                      },
+                    },
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {/* Image Container */}
                   <div
@@ -188,10 +215,10 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
                   >
                     {asset.originalName}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       )}
 

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
+import { AnimatePresence, motion } from "framer-motion";
 import { Download, Pause, Play, RotateCcw, Sparkles } from "lucide-react";
 import { useState } from "react";
 
@@ -156,7 +157,16 @@ Nothing will ever be the same`;
               >
                 {isGeneratingLyrics ? (
                   <>
-                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    </motion.div>
                     Analyzing images and generating lyrics...
                   </>
                 ) : (
@@ -300,57 +310,70 @@ Nothing will ever be the same`;
           </Card>
 
           {/* Generated Audio Preview */}
-          {generatedAudioId && (
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium text-zinc-900">Generated Audio</h3>
-                  <Badge className="bg-green-100 text-green-800">Ready</Badge>
-                </div>
+          <AnimatePresence>
+            {generatedAudioId && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-medium text-zinc-900">
+                        Generated Audio
+                      </h3>
+                      <Badge className="bg-green-100 text-green-800">
+                        Ready
+                      </Badge>
+                    </div>
 
-                {/* Audio Player Mock */}
-                <div className="bg-zinc-50 rounded-lg p-4 space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handlePlayPause}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4" />
-                      )}
-                    </Button>
-                    <div className="flex-1">
-                      <div className="h-2 bg-zinc-200 rounded-full">
-                        <div
-                          className="h-full bg-zinc-900 rounded-full transition-all duration-300"
-                          style={{ width: isPlaying ? "45%" : "0%" }}
-                        />
+                    {/* Audio Player Mock */}
+                    <div className="bg-zinc-50 rounded-lg p-4 space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handlePlayPause}
+                        >
+                          {isPlaying ? (
+                            <Pause className="w-4 h-4" />
+                          ) : (
+                            <Play className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <div className="flex-1">
+                          <div className="h-2 bg-zinc-200 rounded-full">
+                            <div
+                              className="h-full bg-zinc-900 rounded-full transition-all duration-300"
+                              style={{ width: isPlaying ? "45%" : "0%" }}
+                            />
+                          </div>
+                        </div>
+                        <span className="text-xs text-zinc-500">2:34</span>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleRegenerate}
+                        >
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Regenerate
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
                       </div>
                     </div>
-                    <span className="text-xs text-zinc-500">2:34</span>
-                  </div>
-
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleRegenerate}
-                    >
-                      <RotateCcw className="w-3 h-3 mr-1" />
-                      Regenerate
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Download className="w-3 h-3 mr-1" />
-                      Download
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Tips */}
           <Card>

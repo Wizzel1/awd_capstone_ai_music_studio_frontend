@@ -3,29 +3,26 @@
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { AudioMethod, WorkflowStep } from "@/lib/types/workflow";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 interface StepInfo {
   step: WorkflowStep;
   title: string;
-  description: string;
 }
 
 const baseSteps: StepInfo[] = [
   {
     step: WorkflowStep.IMAGE_SELECTION,
     title: "Select Images",
-    description: "Choose images for your video",
   },
   {
     step: WorkflowStep.AUDIO_METHOD,
     title: "Audio Method",
-    description: "Choose how to add audio",
   },
   {
     step: WorkflowStep.VIDEO_GENERATION,
     title: "Generate Video",
-    description: "Create your final video",
   },
 ];
 
@@ -41,13 +38,11 @@ export default function StepProgress() {
     steps.splice(2, 0, {
       step: WorkflowStep.AI_AUDIO_GENERATION,
       title: "Generate Audio",
-      description: "Create audio with AI",
     });
   } else if (audioMethod === AudioMethod.FILE_UPLOAD) {
     steps.splice(2, 0, {
       step: WorkflowStep.AUDIO_FILE_SELECTION,
       title: "Select Audio",
-      description: "Choose audio files",
     });
   }
 
@@ -65,10 +60,15 @@ export default function StepProgress() {
         {/* Progress Line */}
         <div className="relative">
           <div className="absolute top-5 left-0 right-0 h-0.5 bg-zinc-200">
-            <div
-              className="h-full bg-zinc-900 transition-all duration-300"
-              style={{
+            <motion.div
+              className="h-full bg-zinc-900"
+              initial={{ width: "0%" }}
+              animate={{
                 width: `${(currentStepIndex / (steps.length - 1)) * 100}%`,
+              }}
+              transition={{
+                duration: 0.5,
+                ease: "easeInOut",
               }}
             />
           </div>
@@ -79,20 +79,51 @@ export default function StepProgress() {
               const status = getStepStatus(index);
 
               return (
-                <div key={step.step} className="flex flex-col items-center">
+                <motion.div
+                  key={step.step}
+                  className="flex flex-col items-center"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: index * 0.1,
+                    duration: 0.3,
+                    ease: "easeOut",
+                  }}
+                >
                   {/* Step Circle */}
-                  <div
+                  <motion.div
                     className={cn(
-                      "w-10 h-10 rounded-full border-2 flex items-center justify-center bg-white transition-all duration-300",
+                      "w-10 h-10 rounded-full border-2 flex items-center justify-center bg-white",
                       {
                         "border-zinc-900 bg-zinc-900":
                           status === "current" || status === "completed",
                         "border-zinc-300": status === "upcoming",
                       }
                     )}
+                    animate={{
+                      scale: status === "current" ? 1.1 : 1,
+                      borderColor:
+                        status === "current" || status === "completed"
+                          ? "#18181b"
+                          : "#d4d4d8",
+                      backgroundColor:
+                        status === "current" || status === "completed"
+                          ? "#18181b"
+                          : "#ffffff",
+                    }}
+                    transition={{
+                      duration: 0.3,
+                      ease: "easeInOut",
+                    }}
                   >
                     {status === "completed" ? (
-                      <Check className="w-5 h-5 text-white" />
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.1, duration: 0.2 }}
+                      >
+                        <Check className="w-5 h-5 text-white" />
+                      </motion.div>
                     ) : (
                       <span
                         className={cn("text-sm font-semibold", {
@@ -103,7 +134,7 @@ export default function StepProgress() {
                         {index + 1}
                       </span>
                     )}
-                  </div>
+                  </motion.div>
 
                   {/* Step Info */}
                   <div className="mt-3 text-center max-w-32">
@@ -116,17 +147,8 @@ export default function StepProgress() {
                     >
                       {step.title}
                     </p>
-                    <p
-                      className={cn("text-xs mt-1", {
-                        "text-zinc-600":
-                          status === "current" || status === "completed",
-                        "text-zinc-400": status === "upcoming",
-                      })}
-                    >
-                      {step.description}
-                    </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
