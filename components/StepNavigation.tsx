@@ -30,7 +30,7 @@ export default function StepNavigation() {
   };
 
   return (
-    <div className="border-t bg-white px-6 py-4">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white px-6 py-4 shadow-lg">
       <div className="flex items-center justify-between max-w-4xl mx-auto">
         {/* Previous Button */}
         <div className="flex-1">

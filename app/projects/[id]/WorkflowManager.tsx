@@ -38,7 +38,7 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b bg-white px-6 py-4">
         <div className="max-w-4xl mx-auto">
@@ -52,8 +52,8 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
       {/* Progress Indicator */}
       <StepProgress />
 
-      {/* Main Content Area */}
-      <div className="flex-1 p-6 overflow-hidden">
+      {/* Main Content Area with bottom padding for fixed navigation */}
+      <div className="p-6 pb-24">
         <div className="max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -72,7 +72,7 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Fixed Navigation */}
       <StepNavigation />
     </div>
   );
