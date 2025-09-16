@@ -45,14 +45,40 @@ const moods = [
 
 export default function AIAudioGeneration() {
   const { state, actions } = useVideoWorkflow();
-  const { lyrics, isGenerating, generatedAudioId } = state;
+  const { lyrics, isGenerating, generatedAudioId, selectedImages } = state;
 
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [selectedMood, setSelectedMood] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
 
   const handleLyricsChange = (newLyrics: string) => {
     actions.setLyrics(newLyrics);
+  };
+
+  const handleGenerateLyrics = async () => {
+    setIsGeneratingLyrics(true);
+
+    // TODO: Implement actual API call in Phase 4
+    // For now, simulate lyrics generation based on images
+    console.log("Generating lyrics from images:", selectedImages);
+
+    // Simulate loading
+    setTimeout(() => {
+      const mockLyrics = `Looking at these memories captured in time
+Each image tells a story, each moment divine
+Colors and emotions dancing in the light
+Creating a symphony of visual delight
+
+[Chorus]
+These pictures paint a thousand words
+Of beauty that can't be heard
+Let the music flow through each frame
+Nothing will ever be the same`;
+
+      actions.setLyrics(mockLyrics);
+      setIsGeneratingLyrics(false);
+    }, 2000);
   };
 
   const handleGenerate = async () => {
@@ -101,11 +127,53 @@ export default function AIAudioGeneration() {
       <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {/* Left Column - Input */}
         <div className="space-y-6">
+          {/* Generate Lyrics from Images */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-zinc-900">
+              Generate Lyrics from Your Images
+            </label>
+            <div className="p-4 border-2 border-dashed border-zinc-200 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm font-medium text-zinc-900">
+                    AI Lyrics Generation
+                  </span>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {selectedImages.length} images selected
+                </Badge>
+              </div>
+              <p className="text-sm text-zinc-600 mb-4">
+                Let AI analyze your selected images and create lyrics that match
+                the visual story and mood.
+              </p>
+              <Button
+                onClick={handleGenerateLyrics}
+                disabled={selectedImages.length === 0 || isGeneratingLyrics}
+                variant="outline"
+                className="w-full"
+              >
+                {isGeneratingLyrics ? (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                    Analyzing images and generating lyrics...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generate Lyrics from Images
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
           {/* Lyrics Input */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium text-zinc-900">
-                Lyrics
+                Lyrics {lyrics && "(Generated or Custom)"}
               </label>
               <span
                 className={`text-xs ${
@@ -116,7 +184,7 @@ export default function AIAudioGeneration() {
               </span>
             </div>
             <Textarea
-              placeholder="Write your lyrics here...&#10;&#10;Verse 1:&#10;Your story begins here&#10;With words that inspire&#10;&#10;Chorus:&#10;Sing your heart out loud&#10;Let the music flow..."
+              placeholder="Generate lyrics from your images above, or write your own lyrics here...&#10;&#10;Verse 1:&#10;Your story begins here&#10;With words that inspire&#10;&#10;Chorus:&#10;Sing your heart out loud&#10;Let the music flow..."
               value={lyrics || ""}
               onChange={(e) => handleLyricsChange(e.target.value)}
               className="min-h-48 resize-none"
@@ -294,12 +362,19 @@ export default function AIAudioGeneration() {
                 <div className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
                   <span>
+                    Use AI lyrics generation to create content that matches your
+                    images
+                  </span>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
+                  <span>
                     Keep lyrics between 50-500 characters for best results
                   </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
-                  <span>Use simple verse/chorus structure</span>
+                  <span>Edit generated lyrics to personalize your message</span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2" />
