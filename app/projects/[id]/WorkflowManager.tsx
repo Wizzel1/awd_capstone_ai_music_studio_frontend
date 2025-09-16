@@ -2,85 +2,14 @@
 
 import StepNavigation from "@/components/StepNavigation";
 import StepProgress from "@/components/StepProgress";
+import AIAudioGeneration from "@/components/steps/AIAudioGeneration";
+import AudioFileSelection from "@/components/steps/AudioFileSelection";
+import AudioMethodSelection from "@/components/steps/AudioMethodSelection";
+import ImageSelection from "@/components/steps/ImageSelection";
+import VideoGenerationSummary from "@/components/steps/VideoGenerationSummary";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { Project } from "@/lib/types/project";
 import { WorkflowStep } from "@/lib/types/workflow";
-
-// Placeholder step components (will be created in Phase 3)
-function ImageSelectionStep() {
-  return (
-    <div className="flex items-center justify-center h-96 bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-300">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          Image Selection
-        </h3>
-        <p className="text-zinc-600">
-          This step will be implemented in Phase 3
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AudioMethodSelectionStep() {
-  return (
-    <div className="flex items-center justify-center h-96 bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-300">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          Audio Method Selection
-        </h3>
-        <p className="text-zinc-600">
-          This step will be implemented in Phase 3
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AIAudioGenerationStep() {
-  return (
-    <div className="flex items-center justify-center h-96 bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-300">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          AI Audio Generation
-        </h3>
-        <p className="text-zinc-600">
-          This step will be implemented in Phase 3
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AudioFileSelectionStep() {
-  return (
-    <div className="flex items-center justify-center h-96 bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-300">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          Audio File Selection
-        </h3>
-        <p className="text-zinc-600">
-          This step will be implemented in Phase 3
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function VideoGenerationStep() {
-  return (
-    <div className="flex items-center justify-center h-96 bg-zinc-50 rounded-lg border-2 border-dashed border-zinc-300">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-          Video Generation
-        </h3>
-        <p className="text-zinc-600">
-          This step will be implemented in Phase 3
-        </p>
-      </div>
-    </div>
-  );
-}
 
 interface WorkflowManagerProps {
   project: Project;
@@ -93,17 +22,17 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
   const renderCurrentStep = () => {
     switch (currentStep) {
       case WorkflowStep.IMAGE_SELECTION:
-        return <ImageSelectionStep />;
+        return <ImageSelection project={project} />;
       case WorkflowStep.AUDIO_METHOD:
-        return <AudioMethodSelectionStep />;
+        return <AudioMethodSelection />;
       case WorkflowStep.AI_AUDIO_GENERATION:
-        return <AIAudioGenerationStep />;
+        return <AIAudioGeneration />;
       case WorkflowStep.AUDIO_FILE_SELECTION:
-        return <AudioFileSelectionStep />;
+        return <AudioFileSelection project={project} />;
       case WorkflowStep.VIDEO_GENERATION:
-        return <VideoGenerationStep />;
+        return <VideoGenerationSummary />;
       default:
-        return <ImageSelectionStep />;
+        return <ImageSelection project={project} />;
     }
   };
 
