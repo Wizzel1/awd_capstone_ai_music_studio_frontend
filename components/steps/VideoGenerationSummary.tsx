@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
@@ -59,40 +60,30 @@ export default function VideoGenerationSummary({
 
   const [resolution, setResolution] = useState("1080p");
   const [frameRate, setFrameRate] = useState("30");
-  const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
-  const [generationComplete, setGenerationComplete] = useState(false);
+  const [taskId, setTaskId] = useState<string | null>(null);
+
+  const { getTasksForProject } = useUserTasks();
+  const tasks = getTasksForProject(project.id);
+
+  const isGenerating = (() => {
+    const videoTask = tasks.find((task) => task.id === taskId);
+    return videoTask?.status === "running";
+  })();
+
+  const generationComplete = (() => {
+    const videoTask = tasks.find((task) => task.id === taskId);
+    return videoTask?.status === "finished";
+  })();
 
   const handleGenerate = async () => {
-    setIsGenerating(true);
     setGenerationProgress(0);
 
     const audioIds = selectedAudios.map((audio) => audio.asset.id);
     const imageIds = selectedImages.map((image) => image.asset.id);
 
-    TaskService.createTask(project.id, audioIds, imageIds);
-
-    // Simulate video generation progress
-    const interval = setInterval(() => {
-      setGenerationProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsGenerating(false);
-          setGenerationComplete(true);
-          return 100;
-        }
-        return prev + Math.random() * 15;
-      });
-    }, 500);
-
-    // TODO: Implement actual video generation API call
-    console.log("Generating video with:", {
-      images: selectedImages,
-      audioMethod,
-      audio: selectedAudios,
-      lyrics,
-      resolution,
-      frameRate,
+    TaskService.createTask(project.id, audioIds, imageIds).then((data) => {
+      setTaskId(data.taskId);
     });
   };
 

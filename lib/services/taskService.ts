@@ -17,12 +17,13 @@ export class TaskService {
         body: JSON.stringify({ audioIds, imageIds }),
       }
     );
+    const data = await response.json();
 
     if (!response.ok) {
-      const error = await response.json();
-      return { success: false, error: error.message };
+      return { taskId: null, error: data.message };
     }
-    return { success: true, error: null };
+
+    return { taskId: data.id, error: null };
   }
 
   static async getTasksForUser() {
