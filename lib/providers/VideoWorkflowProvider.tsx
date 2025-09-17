@@ -16,7 +16,6 @@ const initialState: WorkflowState = {
   audioMethod: undefined,
   selectedAudios: [],
   lyrics: undefined,
-  generatedAudios: [],
   isGenerating: false,
   canProceed: false,
 };
@@ -32,7 +31,6 @@ type WorkflowAction =
   | { type: "SELECT_AUDIO"; payload: Asset }
   | { type: "REMOVE_AUDIO"; payload: string }
   | { type: "SET_LYRICS"; payload: string }
-  | { type: "SET_GENERATED_AUDIO"; payload: Asset }
   | { type: "SET_GENERATING"; payload: boolean }
   | { type: "RESET_WORKFLOW" };
 
@@ -188,13 +186,6 @@ function workflowReducer(
         canProceed: action.payload.trim().length > 0,
       };
 
-    case "SET_GENERATED_AUDIO":
-      return {
-        ...state,
-        generatedAudios: [...state.generatedAudios, action.payload],
-        canProceed: true,
-      };
-
     case "SET_GENERATING":
       return {
         ...state,
@@ -242,8 +233,6 @@ export function VideoWorkflowProvider({
       dispatch({ type: "REMOVE_AUDIO", payload: assetId }),
     setLyrics: (lyrics: string) =>
       dispatch({ type: "SET_LYRICS", payload: lyrics }),
-    addGeneratedAudio: (audio: Asset) =>
-      dispatch({ type: "SET_GENERATED_AUDIO", payload: audio }),
     resetWorkflow: () => dispatch({ type: "RESET_WORKFLOW" }),
   };
 

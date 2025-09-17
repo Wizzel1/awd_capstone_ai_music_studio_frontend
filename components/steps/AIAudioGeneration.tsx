@@ -17,6 +17,7 @@ import { AiService } from "@/lib/services/aiService";
 import { Project } from "@/lib/types/project";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const musicStyles = [
@@ -49,19 +50,18 @@ const moods = [
 
 export default function AIAudioGeneration({ project }: { project: Project }) {
   const { state, actions } = useVideoWorkflow();
-  const {
-    lyrics,
-    isGenerating,
-    generatedAudios,
-    selectedImages,
-    selectedAudios,
-  } = state;
+  const { lyrics, isGenerating, selectedImages, selectedAudios } = state;
 
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [selectedMood, setSelectedMood] = useState<string>("");
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
   const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
+
+  const generatedAudio = project.assets.filter(
+    (asset) => asset.format === "ai_audio"
+  );
+
+  const router = useRouter();
 
   const handleLyricsChange = (newLyrics: string) => {
     actions.setLyrics(newLyrics);
@@ -88,17 +88,10 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
       lyricsPrompt: selectedStyle + " " + selectedMood,
       projectId: project.id,
     })
-      .then((data) => {
-        actions.addGeneratedAudio(data);
-      })
+      .then(router.refresh)
       .finally(() => {
         setIsGeneratingAudio(false);
       });
-  };
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    // TODO: Implement actual audio playback
   };
 
   const charCount = lyrics?.length || 0;
@@ -272,10 +265,16 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
             </div>
           </div>
           {/* Generated Audio Preview */}
+          {isGeneratingAudio && (
+            <div className="flex items-center justify-center">
+              <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+              Generating Audio...
+            </div>
+          )}
           <AudioPlaybackProvider>
             <AnimatePresence>
-              {generatedAudios.length > 0 &&
-                generatedAudios.map((audio) => (
+              {generatedAudio.length > 0 &&
+                generatedAudio.map((audio) => (
                   <motion.div
                     key={audio.id}
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -290,7 +289,15 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
                         (item) => item.asset.id === audio.id
                       )}
                       toggleFileSelection={() => {
-                        actions.selectAudio(audio);
+                        if (
+                          selectedAudios.some(
+                            (item) => item.asset.id === audio.id
+                          )
+                        ) {
+                          actions.removeAudio(audio.id);
+                        } else {
+                          actions.selectAudio(audio);
+                        }
                       }}
                     />
                   </motion.div>
