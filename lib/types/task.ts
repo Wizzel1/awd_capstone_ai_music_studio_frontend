@@ -4,6 +4,7 @@ export const taskSchema = z.object({
   id: z.uuid(),
   projectId: z.uuid(),
   error: z.string().nullable(),
+  result: z.record(z.string(), z.string()).nullable(),
   status: z.enum(["running", "error", "finished"]),
   createdAt: z.string(),
   updatedAt: z.string(),
