@@ -26,7 +26,8 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const videoResolutions = [
   { value: "720p", label: "720p HD", description: "1280 × 720", size: "~50MB" },
@@ -62,19 +63,21 @@ export default function VideoGenerationSummary({
   const [frameRate, setFrameRate] = useState("30");
   const [generationProgress, setGenerationProgress] = useState(0);
   const [taskId, setTaskId] = useState<string | null>(null);
-
+  const router = useRouter();
   const { getTasksForProject } = useUserTasks();
   const tasks = getTasksForProject(project.id);
+  const videoTask = tasks.find((task) => task.id === taskId);
+  const isGenerating = videoTask?.status === "running";
+  const generationComplete = videoTask?.status === "finished";
 
-  const isGenerating = (() => {
-    const videoTask = tasks.find((task) => task.id === taskId);
-    return videoTask?.status === "running";
-  })();
+  useEffect(() => {
+    if (generationComplete) router.refresh();
+  }, [generationComplete]);
 
-  const generationComplete = (() => {
-    const videoTask = tasks.find((task) => task.id === taskId);
-    return videoTask?.status === "finished";
-  })();
+  const videoAsset = project.assets.find((asset) => {
+    const name = videoTask?.result?.["videoKey"].split("/")[2];
+    return asset.originalName === name;
+  });
 
   const handleGenerate = async () => {
     setGenerationProgress(0);
@@ -127,6 +130,7 @@ export default function VideoGenerationSummary({
             <div className="text-center space-y-4">
               <div className="w-full h-48 bg-zinc-100 rounded-lg flex items-center justify-center">
                 <Play className="w-12 h-12 text-zinc-400" />
+                <video src={videoAsset?.downloadUrl} controls />
               </div>
               <div>
                 <h3 className="font-semibold text-zinc-900">Generated Video</h3>
