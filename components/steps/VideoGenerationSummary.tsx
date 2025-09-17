@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
+import { TaskService } from "@/lib/services/taskService";
+import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
 import {
   CheckCircle,
@@ -47,15 +49,13 @@ const frameRates = [
   { value: "60", label: "60 FPS", description: "Smooth" },
 ];
 
-export default function VideoGenerationSummary() {
+export default function VideoGenerationSummary({
+  project,
+}: {
+  project: Project;
+}) {
   const { state } = useVideoWorkflow();
-  const {
-    selectedImages,
-    audioMethod,
-    selectedAudio,
-    lyrics,
-    generatedAudioId,
-  } = state;
+  const { selectedImages, audioMethod, selectedAudios, lyrics } = state;
 
   const [resolution, setResolution] = useState("1080p");
   const [frameRate, setFrameRate] = useState("30");
@@ -66,6 +66,11 @@ export default function VideoGenerationSummary() {
   const handleGenerate = async () => {
     setIsGenerating(true);
     setGenerationProgress(0);
+
+    const audioIds = selectedAudios.map((audio) => audio.asset.id);
+    const imageIds = selectedImages.map((image) => image.asset.id);
+
+    TaskService.createTask(project.id, audioIds, imageIds);
 
     // Simulate video generation progress
     const interval = setInterval(() => {
@@ -84,20 +89,19 @@ export default function VideoGenerationSummary() {
     console.log("Generating video with:", {
       images: selectedImages,
       audioMethod,
-      audio: selectedAudio,
+      audio: selectedAudios,
       lyrics,
-      generatedAudioId,
       resolution,
       frameRate,
     });
   };
 
   const getEstimatedDuration = () => {
-    if (audioMethod === AudioMethod.AI_GENERATION && generatedAudioId) {
+    if (audioMethod === AudioMethod.AI_GENERATION) {
       return "2:34"; // Mock duration for generated audio
     }
-    if (audioMethod === AudioMethod.FILE_UPLOAD && selectedAudio.length > 0) {
-      const totalDuration = selectedAudio.reduce(
+    if (audioMethod === AudioMethod.FILE_UPLOAD && selectedAudios.length > 0) {
+      const totalDuration = selectedAudios.reduce(
         (acc, audio) => acc + (audio.asset.metadata?.duration || 0),
         0
       );
@@ -274,15 +278,15 @@ export default function VideoGenerationSummary() {
             </CardHeader>
             <CardContent>
               {audioMethod === AudioMethod.AI_GENERATION ? (
-                <div className="space-y-3">
+                <div className="space-y-8">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-zinc-600">
                       Generated Audio
                     </span>
                     <Badge variant="outline">AI Generated</Badge>
                   </div>
-                  <div className="p-3 bg-zinc-50 rounded-lg">
-                    <p className="text-sm text-zinc-700 line-clamp-3">
+                  <div className="p-3 h-38 bg-zinc-50 rounded-lg">
+                    <p className="text-sm text-zinc-700">
                       {lyrics || "No lyrics provided"}
                     </p>
                   </div>
@@ -295,7 +299,7 @@ export default function VideoGenerationSummary() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {selectedAudio.map((selection) => (
+                  {selectedAudios.map((selection) => (
                     <div
                       key={selection.id}
                       className="flex items-center justify-between p-2 bg-zinc-50 rounded"

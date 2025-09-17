@@ -30,7 +30,9 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
       [WorkflowStep.AUDIO_FILE_SELECTION]: (
         <AudioFileSelection project={project} />
       ),
-      [WorkflowStep.VIDEO_GENERATION]: <VideoGenerationSummary />,
+      [WorkflowStep.VIDEO_GENERATION]: (
+        <VideoGenerationSummary project={project} />
+      ),
     };
 
     return (
