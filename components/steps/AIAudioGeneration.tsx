@@ -277,6 +277,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
               {generatedAudios.length > 0 &&
                 generatedAudios.map((audio) => (
                   <motion.div
+                    key={audio.id}
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -20, scale: 0.95 }}

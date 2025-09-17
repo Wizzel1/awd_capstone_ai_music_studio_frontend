@@ -58,7 +58,7 @@ export default function AudioFileCard({
           className="w-10 h-10 rounded-full"
           onClick={(e) => {
             e.stopPropagation();
-            handlePlayPause(file.id);
+            handlePlayPause(e);
           }}
         >
           {audioFileId === file.id ? (
@@ -93,7 +93,7 @@ export default function AudioFileCard({
               {/* {formatDuration(file.metadata?.duration || 0)} */}
             </span>
             <span className="text-sm text-zinc-500">
-              {(file.metadata?.size || 0 / 1024 / 1024).toFixed(1)} MB
+              {((file.metadata?.size || 0) / 1024 / 1024).toFixed(1)} MB
             </span>
           </div>
         </div>
