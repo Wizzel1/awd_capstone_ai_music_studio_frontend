@@ -19,7 +19,6 @@ import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
 import {
   CheckCircle,
-  Download,
   Image,
   Music,
   Play,
@@ -128,17 +127,21 @@ export default function VideoGenerationSummary({
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-6">
             <div className="text-center space-y-4">
-              <div className="w-full h-48 bg-zinc-100 rounded-lg flex items-center justify-center">
-                <Play className="w-12 h-12 text-zinc-400" />
-                <video src={videoAsset?.downloadUrl} controls />
+              <div className="w-full h-84 bg-zinc-100 rounded-lg flex items-center justify-center">
+                {/* <Play className="w-12 h-12 text-zinc-400" /> */}
+                <video
+                  className="w-full h-full object-cover rounded-lg"
+                  src={videoAsset?.downloadUrl}
+                  controls
+                />
               </div>
-              <div>
+              {/* <div>
                 <h3 className="font-semibold text-zinc-900">Generated Video</h3>
                 <p className="text-sm text-zinc-600">
                   {resolution} • {frameRate} FPS • {getEstimatedDuration()}
                 </p>
-              </div>
-              <div className="flex space-x-3">
+              </div> */}
+              {/* <div className="flex space-x-3">
                 <Button className="flex-1">
                   <Download className="w-4 h-4 mr-2" />
                   Download Video
@@ -147,7 +150,7 @@ export default function VideoGenerationSummary({
                   <Play className="w-4 h-4 mr-2" />
                   Preview
                 </Button>
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>
