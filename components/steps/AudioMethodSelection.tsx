@@ -88,15 +88,17 @@ export default function AudioMethodSelection() {
                     <h3 className="text-xl font-semibold text-zinc-900 mb-1">
                       {method.title}
                     </h3>
-                    <p className="text-zinc-600 text-sm">
+                    <p className="text-zinc-600 text-sm line-clamp-2">
                       {method.description}
                     </p>
                   </div>
-                  {isSelected && (
-                    <div className="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    </div>
-                  )}
+                  <div className="w-6 h-6 ">
+                    {isSelected && (
+                      <div className="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white" />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Features List */}
