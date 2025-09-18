@@ -17,6 +17,7 @@ import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
+import confetti from "canvas-confetti";
 import {
   CheckCircle,
   Image,
@@ -73,6 +74,44 @@ export default function VideoGenerationSummary({
     if (generationComplete) router.refresh();
   }, [generationComplete]);
 
+  // Trigger confetti animation when video generation completes
+  useEffect(() => {
+    if (generationComplete) {
+      const triggerConfetti = () => {
+        const end = Date.now() + 3 * 1000; // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+        const frame = () => {
+          if (Date.now() > end) return;
+
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          });
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          });
+
+          requestAnimationFrame(frame);
+        };
+
+        frame();
+      };
+
+      // Small delay to ensure the success view is rendered first
+      setTimeout(triggerConfetti, 100);
+    }
+  }, [generationComplete]);
+
   const videoAsset = project.assets.find((asset) => {
     const name = videoTask?.result?.["videoKey"].split("/")[2];
     return asset.originalName === name;
@@ -125,10 +164,9 @@ export default function VideoGenerationSummary({
         </div>
 
         <Card className="max-w-2xl mx-auto">
-          <CardContent className="p-6">
+          <CardContent>
             <div className="text-center space-y-4">
               <div className="w-full h-84 bg-zinc-100 rounded-lg flex items-center justify-center">
-                {/* <Play className="w-12 h-12 text-zinc-400" /> */}
                 <video
                   className="w-full h-full object-cover rounded-lg"
                   src={videoAsset?.downloadUrl}
