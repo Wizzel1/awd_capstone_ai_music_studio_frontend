@@ -243,16 +243,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
               >
                 {isGeneratingLyrics ? (
                   <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    >
-                      <Sparkles className="w-4 h-4 mr-2" />
-                    </motion.div>
+                    <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
                     Analyzing images and generating lyrics...
                   </>
                 ) : (
