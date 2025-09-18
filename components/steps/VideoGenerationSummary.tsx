@@ -18,14 +18,7 @@ import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
 import confetti from "canvas-confetti";
-import {
-  CheckCircle,
-  Image,
-  Music,
-  Play,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import { Image, Music, Play, Settings, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -154,9 +147,6 @@ export default function VideoGenerationSummary({
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-green-600" />
-          </div>
           <h2 className="text-2xl font-bold text-zinc-900 mb-2">
             Video Generated Successfully!
           </h2>
@@ -247,16 +237,6 @@ export default function VideoGenerationSummary({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Generate Your Video
-        </h2>
-        <p className="text-zinc-600">
-          Review your selections and configure video settings
-        </p>
-      </div>
-
       <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {/* Left Column - Content Summary */}
         <div className="lg:col-span-2 space-y-6">

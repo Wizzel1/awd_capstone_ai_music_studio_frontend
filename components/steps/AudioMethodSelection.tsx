@@ -45,16 +45,6 @@ export default function AudioMethodSelection() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Choose Audio Method
-        </h2>
-        <p className="text-zinc-600">
-          How would you like to add audio to your video?
-        </p>
-      </div>
-
       {/* Method Cards */}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {methods.map((method) => {

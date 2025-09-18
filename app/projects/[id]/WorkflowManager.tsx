@@ -42,7 +42,7 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white ">
       {/* Header */}
       <div className="border-b bg-white px-6 py-4">
         <div className="max-w-4xl mx-auto">
