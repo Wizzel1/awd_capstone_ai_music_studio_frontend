@@ -13,7 +13,7 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 const initialState: WorkflowState = {
   currentStep: WorkflowStep.IMAGE_SELECTION,
   selectedImages: [],
-  audioMethod: undefined,
+  audioMethod: AudioMethod.AI_GENERATION,
   selectedAudios: [],
   lyrics: undefined,
   isGenerating: false,
