@@ -56,10 +56,10 @@ export default function StepProgress() {
 
   return (
     <div className="w-full py-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-24 pt-4">
         {/* Progress Line */}
         <div className="relative">
-          <div className="absolute top-4 left-0 right-0 h-0.5 bg-zinc-200">
+          <div className="absolute top-3 left-0 right-0 h-0.5 bg-zinc-200">
             <motion.div
               className="h-full bg-zinc-900"
               initial={{ width: "0%" }}
@@ -93,7 +93,7 @@ export default function StepProgress() {
                   {/* Step Circle */}
                   <motion.div
                     className={cn(
-                      "w-8 h-8 rounded-full border-2 flex items-center justify-center bg-white",
+                      "w-6 h-6 rounded-full border-2 flex items-center justify-center bg-white",
                       {
                         "border-zinc-900 bg-zinc-900":
                           status === "current" || status === "completed",
