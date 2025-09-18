@@ -62,6 +62,7 @@ export default function VideoGenerationSummary({
   const videoTask = tasks.find((task) => task.id === taskId);
   const isGenerating = videoTask?.status === "running";
   const generationComplete = videoTask?.status === "finished";
+  const generationFailed = videoTask?.status === "error";
 
   useEffect(() => {
     if (generationComplete) router.refresh();
@@ -182,6 +183,20 @@ export default function VideoGenerationSummary({
             </div>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  if (generationFailed) {
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-zinc-900 mb-2">
+            Video Generation Failed 😥
+          </h2>
+          <p className="text-zinc-600">Please try again or contact support</p>
+          <Button onClick={handleGenerate}>Try Again</Button>
+        </div>
       </div>
     );
   }
