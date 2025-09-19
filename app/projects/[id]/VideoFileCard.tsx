@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { Asset } from "@/lib/types/asset";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Image, Loader2, Music } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export default function VideoFileCard({
@@ -121,19 +121,7 @@ export default function VideoFileCard({
             <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <Image className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-900">
@@ -147,19 +135,7 @@ export default function VideoFileCard({
             <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
-                    />
-                  </svg>
+                  <Music className="w-4 h-4 text-green-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-900">
