@@ -72,14 +72,14 @@ export default function VideoGenerationSummary({
   useEffect(() => {
     if (generationComplete) {
       const triggerConfetti = () => {
-        const end = Date.now() + 3 * 1000; // 3 seconds
+        const end = Date.now() + 2 * 1000; // 3 seconds
         const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 
         const frame = () => {
           if (Date.now() > end) return;
 
           confetti({
-            particleCount: 2,
+            particleCount: 1,
             angle: 60,
             spread: 55,
             startVelocity: 60,
@@ -87,7 +87,7 @@ export default function VideoGenerationSummary({
             colors: colors,
           });
           confetti({
-            particleCount: 2,
+            particleCount: 1,
             angle: 120,
             spread: 55,
             startVelocity: 60,
