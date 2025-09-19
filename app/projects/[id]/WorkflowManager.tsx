@@ -42,12 +42,13 @@ export default function WorkflowManager({ project }: WorkflowManagerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white ">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div className="min-h-screen bg-white space-y-8 py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-zinc-900">Create Video</h2>
+          <h1 className="text-3xl font-bold text-zinc-900">{project.name}</h1>
+
           <p className="text-sm text-zinc-600 mt-1">
-            Manage and view your project's video assets
+            Create a video from your images and audio
           </p>
         </div>
       </div>

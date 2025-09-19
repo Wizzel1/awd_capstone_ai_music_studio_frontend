@@ -20,13 +20,13 @@ export default function VideoManager({ project }: VideoManagerProps) {
   };
 
   return (
-    <>
+    <div className="space-y-8 py-8">
       {/* Project Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-zinc-900">Video Files</h2>
+          <h1 className="text-3xl font-bold text-zinc-900">{project.name}</h1>
           <p className="text-sm text-zinc-600 mt-1">
-            Manage and view your project's video assets
+            View your project's video assets
           </p>
         </div>
         <Button onClick={handleGenerateNewProject} className="w-full sm:w-auto">
@@ -40,6 +40,6 @@ export default function VideoManager({ project }: VideoManagerProps) {
           <VideoFileCard key={file.id} file={file} />
         ))}
       </div>
-    </>
+    </div>
   );
 }
