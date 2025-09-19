@@ -1,6 +1,6 @@
 "use client";
 
-import AudioFileCard from "@/app/projects/[id]/generate/AudioFileCard";
+import AudioFileCard from "@/app/projects/[id]/create/AudioFileCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

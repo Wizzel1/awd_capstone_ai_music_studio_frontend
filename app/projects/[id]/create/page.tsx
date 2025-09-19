@@ -1,6 +1,6 @@
 import { VideoWorkflowProvider } from "@/lib/providers/VideoWorkflowProvider";
 import { ProjectsService } from "@/lib/services/projectsService";
-import WorkflowManager from "./WorkflowManager";
+import WorkflowManager from "../WorkflowManager";
 
 export default async function ProjectDetailsPage({
   params,
