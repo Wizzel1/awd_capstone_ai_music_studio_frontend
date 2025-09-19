@@ -1,4 +1,4 @@
-import TaskFileCard from "@/app/projects/[id]/TaskFileCard";
+import TaskFileCard from "@/app/projects/[id]/generate/TaskFileCard";
 import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { Project } from "@/lib/types/project";
 
