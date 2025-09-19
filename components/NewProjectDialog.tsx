@@ -12,24 +12,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { createProject } from "@/lib/actions/createProject";
 import { Plus } from "lucide-react";
-import { useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+
+type ActionState = {
+  success?: boolean;
+  error?: string;
+  message?: string;
+} | null;
 
 export function NewProjectDialog({ children }: { children?: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const [state, formAction, isPending] = useActionState<ActionState, FormData>(
+    createProject,
+    null
+  );
+
+  // Close dialog when project is created successfully
+  useEffect(() => {
+    if (state && !state.error) {
+      setOpen(false);
+    }
+  }, [state]);
+
   function SubmitButton() {
-    const { pending } = useFormStatus(); // This works because it's inside the form
     return (
       <Button
         type="submit"
-        disabled={pending}
+        disabled={isPending}
         className="bg-zinc-900 hover:bg-zinc-800 text-white"
       >
-        {pending ? "Creating..." : "Create Project"}
+        {isPending ? "Creating..." : "Create Project"}
       </Button>
     );
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children || (
           <Button className="bg-zinc-900 hover:bg-zinc-800 text-white">
@@ -47,7 +65,7 @@ export function NewProjectDialog({ children }: { children?: React.ReactNode }) {
             Give your AI music studio project a memorable name.
           </p>
         </DialogHeader>
-        <form action={createProject} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <label
               htmlFor="project-name"
@@ -63,6 +81,9 @@ export function NewProjectDialog({ children }: { children?: React.ReactNode }) {
               required
             />
           </div>
+          {state?.error && (
+            <p className="text-sm text-red-600">{state.error}</p>
+          )}
           <DialogFooter className="gap-3">
             <DialogClose asChild>
               <Button variant="outline" className="flex-1">

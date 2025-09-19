@@ -45,16 +45,6 @@ export default function AudioMethodSelection() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Choose Audio Method
-        </h2>
-        <p className="text-zinc-600">
-          How would you like to add audio to your video?
-        </p>
-      </div>
-
       {/* Method Cards */}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {methods.map((method) => {
@@ -88,15 +78,17 @@ export default function AudioMethodSelection() {
                     <h3 className="text-xl font-semibold text-zinc-900 mb-1">
                       {method.title}
                     </h3>
-                    <p className="text-zinc-600 text-sm">
+                    <p className="text-zinc-600 text-sm line-clamp-2">
                       {method.description}
                     </p>
                   </div>
-                  {isSelected && (
-                    <div className="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    </div>
-                  )}
+                  <div className="w-6 h-6 ">
+                    {isSelected && (
+                      <div className="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white" />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Features List */}

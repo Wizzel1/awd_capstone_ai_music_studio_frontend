@@ -76,17 +76,6 @@ export default function AudioFileSelection({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Select Audio Files
-        </h2>
-        <p className="text-zinc-600">
-          Choose audio files for your video. Upload new files or select from
-          your project.
-        </p>
-      </div>
-
       {/* Upload Area */}
       <div
         {...getRootProps()}

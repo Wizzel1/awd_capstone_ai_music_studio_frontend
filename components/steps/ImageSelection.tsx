@@ -59,15 +59,6 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">Select Images</h2>
-        <p className="text-zinc-600">
-          Choose the images you want to include in your video. Click to select
-          and order them.
-        </p>
-      </div>
-
       {/* Upload Area */}
       <div
         {...getRootProps()}
