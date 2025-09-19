@@ -1,3 +1,4 @@
+import NotificationBell from "@/components/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,7 +8,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-import NotificationBell from "@/components/NotificationBell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
       >
         <UserTaskProvider>
           {/* Header */}
@@ -41,7 +41,9 @@ export default function RootLayout({
               <div className="flex items-center justify-between h-16">
                 <div className="flex items-center">
                   <Link href="/" className="flex items-center space-x-2">
-                    <h1 className="text-xl font-bold text-zinc-900">AI Studio</h1>
+                    <h1 className="text-xl font-bold text-zinc-900">
+                      AI Studio
+                    </h1>
                   </Link>
                 </div>
                 <div className="flex items-center gap-3">
@@ -65,7 +67,7 @@ export default function RootLayout({
           </header>
 
           {/* Main Content */}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
             {children}
           </main>
         </UserTaskProvider>

@@ -6,7 +6,7 @@ export default async function Dashboard() {
   const projects = await ProjectsService.getProjects();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 py-8">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>

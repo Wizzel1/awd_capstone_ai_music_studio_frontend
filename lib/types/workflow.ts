@@ -28,7 +28,7 @@ export interface AudioSelection {
 export interface WorkflowState {
   currentStep: WorkflowStep;
   selectedImages: ImageSelection[];
-  audioMethod?: AudioMethod;
+  audioMethod: AudioMethod;
   selectedAudios: AudioSelection[];
   lyrics?: string;
   isGenerating: boolean;
