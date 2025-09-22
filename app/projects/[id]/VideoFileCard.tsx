@@ -91,11 +91,6 @@ export default function VideoFileCard({
             controlsList="nodownload"
             className="w-full aspect-video object-cover"
           />
-          <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1">
-            <span className="text-white text-xs font-medium">
-              {file.metadata?.size ? `${file.metadata.size} MB` : "Video"}
-            </span>
-          </div>
         </div>
 
         {/* Content Section */}

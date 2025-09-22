@@ -55,7 +55,7 @@ export default function StepProgress() {
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full h-16">
       <div className="max-w-4xl mx-auto px-24 pt-4">
         {/* Progress Line */}
         <div className="relative">

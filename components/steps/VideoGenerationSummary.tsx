@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { TaskService } from "@/lib/services/taskService";
+import { formatDuration } from "@/lib/types/asset";
 import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
 import confetti from "canvas-confetti";
@@ -120,22 +121,6 @@ export default function VideoGenerationSummary({
     TaskService.createTask(project.id, audioIds, imageIds).then((data) => {
       setTaskId(data.taskId);
     });
-  };
-
-  const getEstimatedDuration = () => {
-    if (audioMethod === AudioMethod.AI_GENERATION) {
-      return "2:34"; // Mock duration for generated audio
-    }
-    if (audioMethod === AudioMethod.FILE_UPLOAD && selectedAudios.length > 0) {
-      const totalDuration = selectedAudios.reduce(
-        (acc, audio) => acc + (audio.asset.metadata?.duration || 0),
-        0
-      );
-      const mins = Math.floor(totalDuration / 60);
-      const secs = totalDuration % 60;
-      return `${mins}:${secs.toString().padStart(2, "0")}`;
-    }
-    return "Unknown";
   };
 
   const getEstimatedSize = () => {
@@ -322,7 +307,13 @@ export default function VideoGenerationSummary({
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-zinc-500">Duration:</span>
                     <span className="text-zinc-900">
-                      {getEstimatedDuration()}
+                      {formatDuration(
+                        selectedAudios.reduce(
+                          (acc, audio) =>
+                            acc + (audio.asset.metadata?.duration || 0),
+                          0
+                        )
+                      )}
                     </span>
                   </div>
                 </div>
@@ -349,7 +340,9 @@ export default function VideoGenerationSummary({
                           (selection.asset.metadata?.duration || 0) / 60
                         )}
                         :
-                        {((selection.asset.metadata?.duration || 0) % 60)
+                        {Math.floor(
+                          (selection.asset.metadata?.duration || 0) % 60
+                        )
                           .toString()
                           .padStart(2, "0")}
                       </span>
@@ -421,7 +414,13 @@ export default function VideoGenerationSummary({
                 <div className="flex justify-between">
                   <span className="text-zinc-600">Estimated duration:</span>
                   <span className="text-zinc-900">
-                    {getEstimatedDuration()}
+                    {formatDuration(
+                      selectedAudios.reduce(
+                        (acc, audio) =>
+                          acc + (audio.asset.metadata?.duration || 0),
+                        0
+                      )
+                    )}
                   </span>
                 </div>
                 <div className="flex justify-between">
