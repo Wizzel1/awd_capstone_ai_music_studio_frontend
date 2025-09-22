@@ -1,30 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useAudioPlayback } from "@/lib/providers/AudioPlaybackProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
-import { Asset } from "@/lib/types/asset";
+import { Asset, formatDuration } from "@/lib/types/asset";
 import { cn } from "@/lib/utils";
 import { Music, Pause, Play } from "lucide-react";
 import { useState } from "react";
-
-/**
- * Formats the time in seconds into a readable format
- * @param {number} seconds - Time in seconds
- * @returns {string} - Formatted time
- */
-function formatDuration(seconds: number): string {
-  if (!seconds || isNaN(seconds)) return "0:00";
-
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, "0")}`;
-}
 
 interface AudioCardProps {
   file: Asset;
@@ -60,10 +40,6 @@ export default function AudioFileCard({
     }
   };
 
-  // duration from seconds to human readable format
-  const fileDuration = file.metadata?.duration
-    ? formatDuration(file.metadata.duration)
-    : null;
   return (
     <div
       key={file.id}
@@ -116,16 +92,11 @@ export default function AudioFileCard({
           </div>
           <div className="flex items-center space-x-4 mt-1">
             <span className="text-sm text-zinc-500">
-              {/* {formatDuration(file.metadata?.duration || 0)} */}
+              {formatDuration(file.metadata?.duration || 0)}
             </span>
             <span className="text-sm text-zinc-500">
               {((file.metadata?.size || 0) / 1024 / 1024).toFixed(1)} MB
             </span>
-            {fileDuration && (
-              <span className="text-xs text-zinc-400 block">
-                {fileDuration}
-              </span>
-            )}
           </div>
         </div>
       </div>
