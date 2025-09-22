@@ -1,11 +1,13 @@
 "use client";
 
+import AudioFileCard from "@/app/projects/[id]/create/AudioFileCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { Asset } from "@/lib/types/asset";
 import { cn } from "@/lib/utils";
-import { Music, Pause, Play, Upload, Volume2, X } from "lucide-react";
+import { Music, Upload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -127,141 +129,22 @@ export default function AudioFileSelection({
             )}
           </div>
 
-          <div className="grid gap-3">
-            {audioAssets.map((asset) => {
-              const selected = isSelected(asset.id);
-              const order = getSelectionOrder(asset.id);
-              const isPlaying = playingId === asset.id;
-              const duration = asset.metadata?.duration || 0;
-
-              return (
-                <div
-                  key={asset.id}
-                  className={cn(
-                    "group border-2 rounded-lg p-4 cursor-pointer transition-all",
-                    {
-                      "border-zinc-900 bg-zinc-50": selected,
-                      "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50":
-                        !selected,
+          <AudioPlaybackProvider>
+            <div className="grid gap-3">
+              {audioAssets.map((asset) => {
+                return (
+                  <AudioFileCard
+                    key={asset.id}
+                    file={asset}
+                    isSelected={isSelected(asset.id)}
+                    toggleFileSelection={(fileId, fileType) =>
+                      handleAudioClick(asset)
                     }
-                  )}
-                  onClick={() => handleAudioClick(asset)}
-                >
-                  <div className="flex items-center space-x-4">
-                    {/* Play Button */}
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="w-10 h-10 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayPause(asset.id);
-                      }}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4" />
-                      )}
-                    </Button>
-
-                    {/* Audio Icon */}
-                    <div
-                      className={cn(
-                        "w-10 h-10 rounded-lg flex items-center justify-center",
-                        {
-                          "bg-zinc-900 text-white": selected,
-                          "bg-zinc-100 text-zinc-600": !selected,
-                        }
-                      )}
-                    >
-                      <Music className="w-5 h-5" />
-                    </div>
-
-                    {/* Audio Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-medium text-zinc-900 truncate">
-                          {asset.originalName}
-                        </h4>
-                        {selected && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-zinc-900 text-white"
-                          >
-                            {order}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-4 mt-1">
-                        <span className="text-sm text-zinc-500">
-                          {formatDuration(duration)}
-                        </span>
-                        <span className="text-sm text-zinc-500">
-                          {(asset.metadata?.size || 0 / 1024 / 1024).toFixed(1)}{" "}
-                          MB
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Waveform Placeholder */}
-                    <div className="hidden md:flex items-center space-x-1 w-24">
-                      {Array.from({ length: 12 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            "w-1 bg-zinc-300 rounded-full transition-all",
-                            {
-                              "bg-zinc-900": selected,
-                              "h-3": i % 3 === 0,
-                              "h-5": i % 3 === 1,
-                              "h-4": i % 3 === 2,
-                            }
-                          )}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Volume Icon */}
-                    <Volume2 className="w-4 h-4 text-zinc-400" />
-
-                    {/* Remove Button */}
-                    {selected && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="w-8 h-8 bg-red-500 hover:bg-red-600 text-white border-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          actions.removeAudio(asset.id);
-                        }}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-
-                  {/* Audio Waveform/Progress (when playing) */}
-                  {isPlaying && (
-                    <div className="mt-3 pt-3 border-t border-zinc-200">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-zinc-500">0:00</span>
-                        <div className="flex-1 h-1 bg-zinc-200 rounded-full">
-                          <div
-                            className="h-full bg-zinc-900 rounded-full transition-all duration-300"
-                            style={{ width: "25%" }}
-                          />
-                        </div>
-                        <span className="text-xs text-zinc-500">
-                          {formatDuration(duration)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  />
+                );
+              })}
+            </div>
+          </AudioPlaybackProvider>
         </div>
       )}
 
