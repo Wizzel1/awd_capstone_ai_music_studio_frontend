@@ -8,9 +8,9 @@ import { Asset } from "@/lib/types/asset";
 import { Project } from "@/lib/types/project";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Image as ImageIcon, Upload, X } from "lucide-react";
+import { Image as ImageIcon, Loader2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface ImageSelectionProps {
@@ -20,6 +20,7 @@ interface ImageSelectionProps {
 export default function ImageSelection({ project }: ImageSelectionProps) {
   const { state, actions } = useVideoWorkflow();
   const { selectedImages } = state;
+  const [isUploading, setIsUploading] = useState(false);
 
   const router = useRouter();
 
@@ -29,7 +30,11 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
   );
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    FileService.uploadFiles(acceptedFiles, project.id).then(router.refresh);
+    setIsUploading(true);
+    FileService.uploadFiles(acceptedFiles, project.id).then(() => {
+      setIsUploading(false);
+      router.refresh();
+    });
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -63,22 +68,64 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
       <div
         {...getRootProps()}
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors relative",
           {
             "border-zinc-900 bg-zinc-50": isDragActive,
-            "border-zinc-300 hover:border-zinc-400": !isDragActive,
+            "border-zinc-300 hover:border-zinc-400":
+              !isDragActive && !isUploading,
+            "border-zinc-400 bg-zinc-100 cursor-not-allowed": isUploading,
           }
         )}
       >
-        <input {...getInputProps()} />
-        <Upload className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
+        <input {...getInputProps()} disabled={isUploading} />
+
+        {/* Upload Loading State */}
+        {isUploading && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+            <div className="text-center space-y-3">
+              <Loader2 className="w-12 h-12 text-zinc-600 animate-spin mx-auto" />
+              <div className="space-y-1">
+                <p className="text-lg font-medium text-zinc-700">
+                  Uploading images...
+                </p>
+                <p className="text-sm text-zinc-600">
+                  Please wait while we process your files
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Upload
+          className={cn("w-12 h-12 mx-auto mb-4", {
+            "text-zinc-400": !isUploading,
+            "text-zinc-300": isUploading,
+          })}
+        />
         <div className="space-y-2">
-          <p className="text-lg font-medium text-zinc-900">
+          <p
+            className={cn("text-lg font-medium", {
+              "text-zinc-900": !isUploading,
+              "text-zinc-400": isUploading,
+            })}
+          >
             {isDragActive ? "Drop images here" : "Drag & drop images here"}
           </p>
-          <p className="text-sm text-zinc-500">
+          <p
+            className={cn("text-sm", {
+              "text-zinc-500": !isUploading,
+              "text-zinc-400": isUploading,
+            })}
+          >
             or{" "}
-            <span className="text-zinc-900 font-medium">click to browse</span>
+            <span
+              className={cn("font-medium", {
+                "text-zinc-900": !isUploading,
+                "text-zinc-400": isUploading,
+              })}
+            >
+              click to browse
+            </span>
           </p>
           <p className="text-xs text-zinc-400">Supports: JPG, PNG, GIF, WebP</p>
         </div>
