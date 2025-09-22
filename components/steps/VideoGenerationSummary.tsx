@@ -271,9 +271,7 @@ export default function VideoGenerationSummary({
                       <img
                         src={selection.asset.downloadUrl}
                         alt={selection.asset.originalName}
-                        // fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 25vw, 16vw"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <Badge
@@ -443,7 +441,7 @@ export default function VideoGenerationSummary({
               <div className="text-center">
                 <p className="text-sm text-zinc-600 mb-4">
                   Your video will be created with {selectedImages.length} images
-                  and audio.
+                  and {selectedAudios.length} audio.
                 </p>
                 <Button onClick={handleGenerate} className="w-full" size="lg">
                   <Play className="w-4 h-4 mr-2" />
