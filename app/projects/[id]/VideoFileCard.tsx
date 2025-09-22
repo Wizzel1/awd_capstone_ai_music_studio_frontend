@@ -1,14 +1,56 @@
+import { Button } from "@/components/ui/button";
+import { useUserTasks } from "@/lib/providers/UserTaskProvider";
 import { Asset } from "@/lib/types/asset";
-import { useEffect, useRef } from "react";
+import { Download, Image, Loader2, Music } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export default function VideoFileCard({ file }: { file: Asset }) {
+export default function VideoFileCard({
+  file,
+  projectId,
+}: {
+  file: Asset;
+  projectId: string;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { getTasksForProject } = useUserTasks();
+  const tasks = getTasksForProject(projectId);
+  const videoTask = tasks.find(
+    (task) =>
+      task.status === "finished" &&
+      task.result?.videoKey.split("/")[2] === file.originalName
+  );
+  const usedImages = videoTask?.params?.imageKeys ?? [];
+  const usedAudios = videoTask?.params?.audioKeys ?? [];
 
-  const handlePlay = () => {
-    if (videoRef.current) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      }
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+      // Fetch the video blob
+      const response = await fetch(file.downloadUrl);
+      const blob = await response.blob();
+
+      // Create object URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create temporary anchor element to trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.originalName;
+
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the object URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback to opening in new tab
+      window.open(file.downloadUrl, "_blank");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -37,15 +79,91 @@ export default function VideoFileCard({ file }: { file: Asset }) {
   }, []);
 
   return (
-    <div className="relative aspect-square rounded-lg border-2 cursor-pointer transition-all overflow-hidden border-zinc-200 hover:border-zinc-300 hover:shadow-sm">
-      <video
-        ref={videoRef}
-        src={file.downloadUrl}
-        controls
-        preload="metadata"
-        className="w-full h-full object-cover"
-        onPlay={handlePlay}
-      />
+    <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
+      <div className="flex flex-col lg:flex-row">
+        {/* Video Section */}
+        <div className="relative lg:w-1/2 xl:w-2/5">
+          <video
+            ref={videoRef}
+            src={file.downloadUrl}
+            controls
+            preload="metadata"
+            controlsList="nodownload"
+            className="w-full aspect-video object-cover"
+          />
+          <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1">
+            <span className="text-white text-xs font-medium">
+              {file.metadata?.size ? `${file.metadata.size} MB` : "Video"}
+            </span>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="flex-1 p-6 lg:p-8 space-y-4">
+          <div className="space-y-2">
+            <h3 className="font-semibold text-lg text-zinc-900 line-clamp-2">
+              {file.originalName}
+            </h3>
+            <p className="text-sm text-zinc-500">
+              Created{" "}
+              {new Date(file.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Image className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-900">
+                    {usedImages.length}
+                  </p>
+                  <p className="text-xs text-zinc-500">Images</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Music className="w-4 h-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-900">
+                    {usedAudios.length}
+                  </p>
+                  <p className="text-xs text-zinc-500">Audio tracks</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-2">
+            <Button
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="gap-2"
+            >
+              {isDownloading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              <span>{isDownloading ? "Downloading..." : "Download"}</span>
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -13,10 +13,11 @@ import { createContext, ReactNode, useContext, useReducer } from "react";
 const initialState: WorkflowState = {
   currentStep: WorkflowStep.IMAGE_SELECTION,
   selectedImages: [],
-  audioMethod: undefined,
+  audioMethod: AudioMethod.AI_GENERATION,
   selectedAudios: [],
   lyrics: undefined,
-  isGenerating: false,
+  isGeneratingAudio: false,
+  isGeneratingLyrics: false,
   canProceed: false,
 };
 
@@ -31,7 +32,8 @@ type WorkflowAction =
   | { type: "SELECT_AUDIO"; payload: Asset }
   | { type: "REMOVE_AUDIO"; payload: string }
   | { type: "SET_LYRICS"; payload: string }
-  | { type: "SET_GENERATING"; payload: boolean }
+  | { type: "SET_GENERATING_AUDIO"; payload: boolean }
+  | { type: "SET_GENERATING_LYRICS"; payload: boolean }
   | { type: "RESET_WORKFLOW" };
 
 // Workflow step order - all possible steps
@@ -43,14 +45,36 @@ const stepOrder = [
   WorkflowStep.VIDEO_GENERATION,
 ];
 
+function getCanProceed(state: WorkflowState): boolean {
+  switch (state.currentStep) {
+    case WorkflowStep.IMAGE_SELECTION:
+      return state.selectedImages.length > 0;
+    case WorkflowStep.AUDIO_METHOD:
+      return true; // Can always proceed from audio method selection
+    case WorkflowStep.AI_AUDIO_GENERATION:
+      return state.selectedAudios.length > 0; // Require audio selection
+    case WorkflowStep.AUDIO_FILE_SELECTION:
+      return state.selectedAudios.length > 0;
+    case WorkflowStep.VIDEO_GENERATION:
+      return state.selectedImages.length > 0 && state.selectedAudios.length > 0;
+    default:
+      return false;
+  }
+}
+
 // Reducer function
 function workflowReducer(
   state: WorkflowState,
   action: WorkflowAction
 ): WorkflowState {
   switch (action.type) {
-    case "GO_TO_STEP":
-      return { ...state, currentStep: action.payload };
+    case "GO_TO_STEP": {
+      const newState = { ...state, currentStep: action.payload };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
+      };
+    }
 
     case "NEXT_STEP": {
       const currentIndex = stepOrder.indexOf(state.currentStep);
@@ -72,7 +96,11 @@ function workflowReducer(
           nextStep = WorkflowStep.VIDEO_GENERATION;
         }
 
-        return { ...state, currentStep: nextStep };
+        const newState = { ...state, currentStep: nextStep };
+        return {
+          ...newState,
+          canProceed: getCanProceed(newState),
+        };
       }
       return state;
     }
@@ -98,7 +126,11 @@ function workflowReducer(
           prevStep = WorkflowStep.AUDIO_METHOD;
         }
 
-        return { ...state, currentStep: prevStep };
+        const newState = { ...state, currentStep: prevStep };
+        return {
+          ...newState,
+          canProceed: getCanProceed(newState),
+        };
       }
       return state;
     }
@@ -119,10 +151,13 @@ function workflowReducer(
       };
 
       const newSelectedImages = [...state.selectedImages, newSelection];
-      return {
+      const newState = {
         ...state,
         selectedImages: newSelectedImages,
-        canProceed: newSelectedImages.length > 0,
+      };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
       };
     }
 
@@ -131,19 +166,26 @@ function workflowReducer(
         .filter((img) => img.asset.id !== action.payload)
         .map((img, index) => ({ ...img, order: index + 1 }));
 
-      return {
+      const newState = {
         ...state,
         selectedImages: newSelectedImages,
-        canProceed: newSelectedImages.length > 0,
+      };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
       };
     }
 
-    case "SET_AUDIO_METHOD":
-      return {
+    case "SET_AUDIO_METHOD": {
+      const newState = {
         ...state,
         audioMethod: action.payload,
-        canProceed: true,
       };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
+      };
+    }
 
     case "SELECT_AUDIO": {
       const existingIndex = state.selectedAudios.findIndex(
@@ -160,10 +202,13 @@ function workflowReducer(
       };
 
       const newSelectedAudio = [...state.selectedAudios, newSelection];
-      return {
+      const newState = {
         ...state,
         selectedAudios: newSelectedAudio,
-        canProceed: newSelectedAudio.length > 0,
+      };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
       };
     }
 
@@ -172,24 +217,37 @@ function workflowReducer(
         .filter((audio) => audio.asset.id !== action.payload)
         .map((audio, index) => ({ ...audio, order: index + 1 }));
 
-      return {
+      const newState = {
         ...state,
         selectedAudios: newSelectedAudio,
-        canProceed: newSelectedAudio.length > 0,
+      };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
       };
     }
 
-    case "SET_LYRICS":
-      return {
+    case "SET_LYRICS": {
+      const newState = {
         ...state,
         lyrics: action.payload,
-        canProceed: action.payload.trim().length > 0,
       };
+      return {
+        ...newState,
+        canProceed: getCanProceed(newState),
+      };
+    }
 
-    case "SET_GENERATING":
+    case "SET_GENERATING_AUDIO":
       return {
         ...state,
-        isGenerating: action.payload,
+        isGeneratingAudio: action.payload,
+      };
+
+    case "SET_GENERATING_LYRICS":
+      return {
+        ...state,
+        isGeneratingLyrics: action.payload,
       };
 
     case "RESET_WORKFLOW":
@@ -234,6 +292,10 @@ export function VideoWorkflowProvider({
     setLyrics: (lyrics: string) =>
       dispatch({ type: "SET_LYRICS", payload: lyrics }),
     resetWorkflow: () => dispatch({ type: "RESET_WORKFLOW" }),
+    setGeneratingAudio: (isGenerating: boolean) =>
+      dispatch({ type: "SET_GENERATING_AUDIO", payload: isGenerating }),
+    setGeneratingLyrics: (isGenerating: boolean) =>
+      dispatch({ type: "SET_GENERATING_LYRICS", payload: isGenerating }),
   };
 
   return (

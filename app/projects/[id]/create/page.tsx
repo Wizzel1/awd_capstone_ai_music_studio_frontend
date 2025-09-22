@@ -1,5 +1,6 @@
+import { VideoWorkflowProvider } from "@/lib/providers/VideoWorkflowProvider";
 import { ProjectsService } from "@/lib/services/projectsService";
-import VideoManager from "./VideoManager";
+import WorkflowManager from "../WorkflowManager";
 
 export default async function ProjectDetailsPage({
   params,
@@ -11,5 +12,9 @@ export default async function ProjectDetailsPage({
 
   if (!project) return <div>Loading...</div>;
 
-  return <VideoManager project={project} />;
+  return (
+    <VideoWorkflowProvider>
+      <WorkflowManager project={project} />
+    </VideoWorkflowProvider>
+  );
 }

@@ -17,14 +17,8 @@ import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { TaskService } from "@/lib/services/taskService";
 import { Project } from "@/lib/types/project";
 import { AudioMethod } from "@/lib/types/workflow";
-import {
-  CheckCircle,
-  Image,
-  Music,
-  Play,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import confetti from "canvas-confetti";
+import { Image, Music, Play, Settings, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -68,9 +62,48 @@ export default function VideoGenerationSummary({
   const videoTask = tasks.find((task) => task.id === taskId);
   const isGenerating = videoTask?.status === "running";
   const generationComplete = videoTask?.status === "finished";
+  const generationFailed = videoTask?.status === "error";
 
   useEffect(() => {
     if (generationComplete) router.refresh();
+  }, [generationComplete]);
+
+  // Trigger confetti animation when video generation completes
+  useEffect(() => {
+    if (generationComplete) {
+      const triggerConfetti = () => {
+        const end = Date.now() + 2 * 1000; // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+        const frame = () => {
+          if (Date.now() > end) return;
+
+          confetti({
+            particleCount: 1,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          });
+          confetti({
+            particleCount: 1,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          });
+
+          requestAnimationFrame(frame);
+        };
+
+        frame();
+      };
+
+      // Small delay to ensure the success view is rendered first
+      setTimeout(triggerConfetti, 100);
+    }
   }, [generationComplete]);
 
   const videoAsset = project.assets.find((asset) => {
@@ -115,9 +148,6 @@ export default function VideoGenerationSummary({
     return (
       <div className="space-y-8">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-green-600" />
-          </div>
           <h2 className="text-2xl font-bold text-zinc-900 mb-2">
             Video Generated Successfully!
           </h2>
@@ -125,10 +155,9 @@ export default function VideoGenerationSummary({
         </div>
 
         <Card className="max-w-2xl mx-auto">
-          <CardContent className="p-6">
+          <CardContent>
             <div className="text-center space-y-4">
               <div className="w-full h-84 bg-zinc-100 rounded-lg flex items-center justify-center">
-                {/* <Play className="w-12 h-12 text-zinc-400" /> */}
                 <video
                   className="w-full h-full object-cover rounded-lg"
                   src={videoAsset?.downloadUrl}
@@ -154,6 +183,20 @@ export default function VideoGenerationSummary({
             </div>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  if (generationFailed) {
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-zinc-900 mb-2">
+            Video Generation Failed 😥
+          </h2>
+          <p className="text-zinc-600">Please try again or contact support</p>
+          <Button onClick={handleGenerate}>Try Again</Button>
+        </div>
       </div>
     );
   }
@@ -209,16 +252,6 @@ export default function VideoGenerationSummary({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Generate Your Video
-        </h2>
-        <p className="text-zinc-600">
-          Review your selections and configure video settings
-        </p>
-      </div>
-
       <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {/* Left Column - Content Summary */}
         <div className="lg:col-span-2 space-y-6">
@@ -238,9 +271,7 @@ export default function VideoGenerationSummary({
                       <img
                         src={selection.asset.downloadUrl}
                         alt={selection.asset.originalName}
-                        // fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 25vw, 16vw"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <Badge
@@ -410,7 +441,7 @@ export default function VideoGenerationSummary({
               <div className="text-center">
                 <p className="text-sm text-zinc-600 mb-4">
                   Your video will be created with {selectedImages.length} images
-                  and audio.
+                  and {selectedAudios.length} audio.
                 </p>
                 <Button onClick={handleGenerate} className="w-full" size="lg">
                   <Play className="w-4 h-4 mr-2" />

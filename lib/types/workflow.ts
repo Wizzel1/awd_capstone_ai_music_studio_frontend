@@ -28,10 +28,11 @@ export interface AudioSelection {
 export interface WorkflowState {
   currentStep: WorkflowStep;
   selectedImages: ImageSelection[];
-  audioMethod?: AudioMethod;
+  audioMethod: AudioMethod;
   selectedAudios: AudioSelection[];
   lyrics?: string;
-  isGenerating: boolean;
+  isGeneratingAudio: boolean;
+  isGeneratingLyrics: boolean;
   canProceed: boolean;
 }
 
@@ -46,4 +47,6 @@ export interface WorkflowActions {
   removeAudio: (assetId: string) => void;
   setLyrics: (lyrics: string) => void;
   resetWorkflow: () => void;
+  setGeneratingAudio: (isGenerating: boolean) => void;
+  setGeneratingLyrics: (isGenerating: boolean) => void;
 }

@@ -1,18 +1,21 @@
 "use client";
 
+import AudioFileCard from "@/app/projects/[id]/create/AudioFileCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
+import { FileService } from "@/lib/services/fileService";
 import { Asset } from "@/lib/types/asset";
+import { Project } from "@/lib/types/project";
 import { cn } from "@/lib/utils";
-import { Music, Pause, Play, Upload, Volume2, X } from "lucide-react";
+import { Loader2, Music, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface AudioFileSelectionProps {
-  project: {
-    assets: Asset[];
-  };
+  project: Project;
 }
 
 export default function AudioFileSelection({
@@ -21,6 +24,8 @@ export default function AudioFileSelection({
   const { state, actions } = useVideoWorkflow();
   const { selectedAudios } = state;
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter();
 
   // Filter only audio assets
   const audioAssets = project.assets.filter(
@@ -28,8 +33,11 @@ export default function AudioFileSelection({
   );
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Audio files dropped:", acceptedFiles);
-    // TODO: Handle file upload in Phase 4
+    setIsUploading(true);
+    FileService.uploadFiles(acceptedFiles, project.id).then(() => {
+      setIsUploading(false);
+      router.refresh();
+    });
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -76,39 +84,70 @@ export default function AudioFileSelection({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-          Select Audio Files
-        </h2>
-        <p className="text-zinc-600">
-          Choose audio files for your video. Upload new files or select from
-          your project.
-        </p>
-      </div>
-
       {/* Upload Area */}
       <div
         {...getRootProps()}
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors relative",
           {
             "border-zinc-900 bg-zinc-50": isDragActive,
-            "border-zinc-300 hover:border-zinc-400": !isDragActive,
+            "border-zinc-300 hover:border-zinc-400":
+              !isDragActive && !isUploading,
+            "border-zinc-400 bg-zinc-100 cursor-not-allowed": isUploading,
           }
         )}
       >
-        <input {...getInputProps()} />
-        <Upload className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
+        <input {...getInputProps()} disabled={isUploading} />
+
+        {/* Upload Loading State */}
+        {isUploading && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+            <div className="text-center space-y-3">
+              <Loader2 className="w-12 h-12 text-zinc-600 animate-spin mx-auto" />
+              <div className="space-y-1">
+                <p className="text-lg font-medium text-zinc-700">
+                  Uploading audio files...
+                </p>
+                <p className="text-sm text-zinc-600">
+                  Please wait while we process your files
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Upload
+          className={cn("w-12 h-12 mx-auto mb-4", {
+            "text-zinc-400": !isUploading,
+            "text-zinc-300": isUploading,
+          })}
+        />
         <div className="space-y-2">
-          <p className="text-lg font-medium text-zinc-900">
+          <p
+            className={cn("text-lg font-medium", {
+              "text-zinc-900": !isUploading,
+              "text-zinc-400": isUploading,
+            })}
+          >
             {isDragActive
               ? "Drop audio files here"
               : "Drag & drop audio files here"}
           </p>
-          <p className="text-sm text-zinc-500">
+          <p
+            className={cn("text-sm", {
+              "text-zinc-500": !isUploading,
+              "text-zinc-400": isUploading,
+            })}
+          >
             or{" "}
-            <span className="text-zinc-900 font-medium">click to browse</span>
+            <span
+              className={cn("font-medium", {
+                "text-zinc-900": !isUploading,
+                "text-zinc-400": isUploading,
+              })}
+            >
+              click to browse
+            </span>
           </p>
           <p className="text-xs text-zinc-400">
             Supports: MP3, WAV, M4A, AAC, OGG
@@ -138,141 +177,22 @@ export default function AudioFileSelection({
             )}
           </div>
 
-          <div className="grid gap-3">
-            {audioAssets.map((asset) => {
-              const selected = isSelected(asset.id);
-              const order = getSelectionOrder(asset.id);
-              const isPlaying = playingId === asset.id;
-              const duration = asset.metadata?.duration || 0;
-
-              return (
-                <div
-                  key={asset.id}
-                  className={cn(
-                    "group border-2 rounded-lg p-4 cursor-pointer transition-all",
-                    {
-                      "border-zinc-900 bg-zinc-50": selected,
-                      "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50":
-                        !selected,
+          <AudioPlaybackProvider>
+            <div className="grid gap-3">
+              {audioAssets.map((asset) => {
+                return (
+                  <AudioFileCard
+                    key={asset.id}
+                    file={asset}
+                    isSelected={isSelected(asset.id)}
+                    toggleFileSelection={(fileId, fileType) =>
+                      handleAudioClick(asset)
                     }
-                  )}
-                  onClick={() => handleAudioClick(asset)}
-                >
-                  <div className="flex items-center space-x-4">
-                    {/* Play Button */}
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="w-10 h-10 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayPause(asset.id);
-                      }}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4" />
-                      )}
-                    </Button>
-
-                    {/* Audio Icon */}
-                    <div
-                      className={cn(
-                        "w-10 h-10 rounded-lg flex items-center justify-center",
-                        {
-                          "bg-zinc-900 text-white": selected,
-                          "bg-zinc-100 text-zinc-600": !selected,
-                        }
-                      )}
-                    >
-                      <Music className="w-5 h-5" />
-                    </div>
-
-                    {/* Audio Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-medium text-zinc-900 truncate">
-                          {asset.originalName}
-                        </h4>
-                        {selected && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-zinc-900 text-white"
-                          >
-                            {order}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-4 mt-1">
-                        <span className="text-sm text-zinc-500">
-                          {formatDuration(duration)}
-                        </span>
-                        <span className="text-sm text-zinc-500">
-                          {(asset.metadata?.size || 0 / 1024 / 1024).toFixed(1)}{" "}
-                          MB
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Waveform Placeholder */}
-                    <div className="hidden md:flex items-center space-x-1 w-24">
-                      {Array.from({ length: 12 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            "w-1 bg-zinc-300 rounded-full transition-all",
-                            {
-                              "bg-zinc-900": selected,
-                              "h-3": i % 3 === 0,
-                              "h-5": i % 3 === 1,
-                              "h-4": i % 3 === 2,
-                            }
-                          )}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Volume Icon */}
-                    <Volume2 className="w-4 h-4 text-zinc-400" />
-
-                    {/* Remove Button */}
-                    {selected && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="w-8 h-8 bg-red-500 hover:bg-red-600 text-white border-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          actions.removeAudio(asset.id);
-                        }}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-
-                  {/* Audio Waveform/Progress (when playing) */}
-                  {isPlaying && (
-                    <div className="mt-3 pt-3 border-t border-zinc-200">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-zinc-500">0:00</span>
-                        <div className="flex-1 h-1 bg-zinc-200 rounded-full">
-                          <div
-                            className="h-full bg-zinc-900 rounded-full transition-all duration-300"
-                            style={{ width: "25%" }}
-                          />
-                        </div>
-                        <span className="text-xs text-zinc-500">
-                          {formatDuration(duration)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  />
+                );
+              })}
+            </div>
+          </AudioPlaybackProvider>
         </div>
       )}
 

@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useAudioPlayback } from "@/lib/providers/AudioPlaybackProvider";
+import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { Asset } from "@/lib/types/asset";
 import { cn } from "@/lib/utils";
-import { Music, Pause, Play, Volume2, X } from "lucide-react";
+import { Music, Pause, Play } from "lucide-react";
 import { useState } from "react";
 
 /**
@@ -38,6 +39,7 @@ export default function AudioFileCard({
   const { setAudioUrl, audioFileId, setAudioFileId, volume, setVolume } =
     useAudioPlayback();
   const [isLoading, setIsLoading] = useState(false);
+  const { actions } = useVideoWorkflow();
 
   const handlePlayPause = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the card selection
@@ -126,58 +128,7 @@ export default function AudioFileCard({
             )}
           </div>
         </div>
-
-        {/* Waveform Placeholder */}
-        <div className="hidden md:flex items-center space-x-1 w-24">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className={cn("w-1 bg-zinc-300 rounded-full transition-all", {
-                "bg-zinc-900": isSelected,
-                "h-3": i % 3 === 0,
-                "h-5": i % 3 === 1,
-                "h-4": i % 3 === 2,
-              })}
-            />
-          ))}
-        </div>
-
-        {/* Volume Icon */}
-        <Volume2 className="w-4 h-4 text-zinc-400" />
-
-        {/* Remove Button */}
-        {isSelected && (
-          <Button
-            variant="outline"
-            size="icon"
-            className="w-8 h-8 bg-red-500 hover:bg-red-600 text-white border-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              // actions.removeAudio(file.id);
-            }}
-          >
-            <X className="w-3 h-3" />
-          </Button>
-        )}
       </div>
-
-      {/* Audio Waveform/Progress (when playing) */}
-      {audioFileId === file.id && (
-        <div className="mt-3 pt-3 border-t border-zinc-200">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs text-zinc-500">0:00</span>
-            <div className="flex-1 h-1 bg-zinc-200 rounded-full">
-              <div
-                className="h-full bg-zinc-900 rounded-full transition-all duration-300"
-                style={{ width: "25%" }}
-              />
-            </div>
-            <span className="text-xs text-zinc-500">
-              {/* {formatDuration(file.metadata?.duration || 0)} */}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
