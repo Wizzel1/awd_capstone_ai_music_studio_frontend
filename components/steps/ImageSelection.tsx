@@ -157,9 +157,7 @@ export default function ImageSelection({ project }: ImageSelectionProps) {
                     <img
                       src={asset.downloadUrl}
                       alt={asset.originalName}
-                      //   fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="w-full h-full object-cover"
                     />
 
                     {/* Selection Overlay */}
