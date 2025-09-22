@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { AudioPlaybackProvider } from "@/lib/providers/AudioPlaybackProvider";
 import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { FileService } from "@/lib/services/fileService";
-import { Asset } from "@/lib/types/asset";
+import { Asset, formatDuration } from "@/lib/types/asset";
 import { Project } from "@/lib/types/project";
 import { cn } from "@/lib/utils";
 import { Loader2, Music, Upload } from "lucide-react";
@@ -74,12 +74,6 @@ export default function AudioFileSelection({
       setPlayingId(assetId);
     }
     // TODO: Implement actual audio playback
-  };
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -228,11 +222,12 @@ export default function AudioFileSelection({
               </Badge>
               <p className="text-xs text-zinc-500 mt-1">
                 Total:{" "}
-                {selectedAudios.reduce(
-                  (acc, audio) => acc + (audio.asset.metadata?.duration || 0),
-                  0
+                {formatDuration(
+                  selectedAudios.reduce(
+                    (acc, audio) => acc + (audio.asset.metadata?.duration || 0),
+                    0
+                  )
                 )}
-                s
               </p>
             </div>
           </div>
