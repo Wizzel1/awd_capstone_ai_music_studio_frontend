@@ -16,7 +16,8 @@ const initialState: WorkflowState = {
   audioMethod: AudioMethod.AI_GENERATION,
   selectedAudios: [],
   lyrics: undefined,
-  isGenerating: false,
+  isGeneratingAudio: false,
+  isGeneratingLyrics: false,
   canProceed: false,
 };
 
@@ -31,7 +32,8 @@ type WorkflowAction =
   | { type: "SELECT_AUDIO"; payload: Asset }
   | { type: "REMOVE_AUDIO"; payload: string }
   | { type: "SET_LYRICS"; payload: string }
-  | { type: "SET_GENERATING"; payload: boolean }
+  | { type: "SET_GENERATING_AUDIO"; payload: boolean }
+  | { type: "SET_GENERATING_LYRICS"; payload: boolean }
   | { type: "RESET_WORKFLOW" };
 
 // Workflow step order - all possible steps
@@ -236,10 +238,16 @@ function workflowReducer(
       };
     }
 
-    case "SET_GENERATING":
+    case "SET_GENERATING_AUDIO":
       return {
         ...state,
-        isGenerating: action.payload,
+        isGeneratingAudio: action.payload,
+      };
+
+    case "SET_GENERATING_LYRICS":
+      return {
+        ...state,
+        isGeneratingLyrics: action.payload,
       };
 
     case "RESET_WORKFLOW":
@@ -284,6 +292,10 @@ export function VideoWorkflowProvider({
     setLyrics: (lyrics: string) =>
       dispatch({ type: "SET_LYRICS", payload: lyrics }),
     resetWorkflow: () => dispatch({ type: "RESET_WORKFLOW" }),
+    setGeneratingAudio: (isGenerating: boolean) =>
+      dispatch({ type: "SET_GENERATING_AUDIO", payload: isGenerating }),
+    setGeneratingLyrics: (isGenerating: boolean) =>
+      dispatch({ type: "SET_GENERATING_LYRICS", payload: isGenerating }),
   };
 
   return (

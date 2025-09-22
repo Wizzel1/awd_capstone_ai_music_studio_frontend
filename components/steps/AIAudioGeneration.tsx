@@ -50,11 +50,16 @@ const moods = [
 
 export default function AIAudioGeneration({ project }: { project: Project }) {
   const { state, actions } = useVideoWorkflow();
-  const { lyrics, isGenerating, selectedImages, selectedAudios } = state;
+  const {
+    lyrics,
+    isGeneratingAudio,
+    isGeneratingLyrics,
+    selectedImages,
+    selectedAudios,
+  } = state;
 
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [selectedMood, setSelectedMood] = useState<string>("");
-  const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
 
   const generatedAudio = project.assets.filter(
     (asset) => asset.format === "ai_audio"
@@ -67,7 +72,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
   };
 
   const handleGenerateLyrics = async () => {
-    setIsGeneratingLyrics(true);
+    actions.setGeneratingLyrics(true);
     AiService.generateLyrics(
       selectedImages.map((image) => image.asset),
       project.id
@@ -76,12 +81,12 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
         actions.setLyrics(data.lyrics);
       })
       .finally(() => {
-        setIsGeneratingLyrics(false);
+        actions.setGeneratingLyrics(false);
       });
   };
 
   const handleGenerate = async () => {
-    state.isGenerating = true;
+    actions.setGeneratingAudio(true);
     AiService.generateAudio({
       lyrics: lyrics || "",
       lyricsPrompt: selectedStyle + " " + selectedMood,
@@ -89,7 +94,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
     })
       .then(router.refresh)
       .finally(() => {
-        state.isGenerating = false;
+        actions.setGeneratingAudio(false);
       });
   };
 
@@ -226,12 +231,15 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
           <Button
             onClick={handleGenerate}
             disabled={
-              !isValidLyrics || !selectedStyle || !selectedMood || isGenerating
+              !isValidLyrics ||
+              !selectedStyle ||
+              !selectedMood ||
+              isGeneratingAudio
             }
             className="w-full"
             size="lg"
           >
-            {isGenerating ? (
+            {isGeneratingAudio ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Generating Audio...
