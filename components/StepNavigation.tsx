@@ -47,16 +47,18 @@ export default function StepNavigation() {
         </div>
 
         {/* Next Button */}
-        <div className="flex-1 flex justify-end">
-          <Button
-            onClick={actions.nextStep}
-            disabled={!canProceed}
-            className="gap-2"
-          >
-            {getNextButtonText()}
-            {!isLastStep && <ChevronRight className="w-4 h-4" />}
-          </Button>
-        </div>
+        {!isLastStep && (
+          <div className="flex-1 flex justify-end">
+            <Button
+              onClick={actions.nextStep}
+              disabled={!canProceed}
+              className="gap-2"
+            >
+              {getNextButtonText()}
+              {<ChevronRight className="w-4 h-4" />}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
