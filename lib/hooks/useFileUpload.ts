@@ -14,7 +14,7 @@ export function useFileUpload(
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const uploadFiles = useCallback(
-    async (files: FileList) => {
+    async (files: File[]) => {
       if (!files || files.length === 0) return;
 
       setIsUploading(true);
@@ -45,7 +45,7 @@ export function useFileUpload(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
       if (files) {
-        await uploadFiles(files);
+        await uploadFiles(Array.from(files));
         // Reset input value so same file can be selected again
         event.target.value = "";
       }
