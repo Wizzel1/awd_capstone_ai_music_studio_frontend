@@ -16,7 +16,7 @@ import { useVideoWorkflow } from "@/lib/providers/VideoWorkflowProvider";
 import { AiService } from "@/lib/services/aiService";
 import { Project } from "@/lib/types/project";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -55,7 +55,6 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [selectedMood, setSelectedMood] = useState<string>("");
   const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
-  const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
 
   const generatedAudio = project.assets.filter(
     (asset) => asset.format === "ai_audio"
@@ -82,7 +81,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
   };
 
   const handleGenerate = async () => {
-    setIsGeneratingAudio(true);
+    state.isGenerating = true;
     AiService.generateAudio({
       lyrics: lyrics || "",
       lyricsPrompt: selectedStyle + " " + selectedMood,
@@ -90,7 +89,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
     })
       .then(router.refresh)
       .finally(() => {
-        setIsGeneratingAudio(false);
+        state.isGenerating = false;
       });
   };
 
@@ -133,7 +132,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
               >
                 {isGeneratingLyrics ? (
                   <>
-                    <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Analyzing images and generating lyrics...
                   </>
                 ) : (
@@ -187,13 +186,6 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
               ))}
             </div>
           </div>
-          {/* Generation Status */}
-          {isGeneratingAudio && (
-            <div className="flex items-center justify-center py-8 flex-1">
-              <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-              <span className="text-zinc-600">Generating Audio...</span>
-            </div>
-          )}
         </div>
 
         {/* Right Column - Controls & Preview */}
@@ -241,7 +233,7 @@ export default function AIAudioGeneration({ project }: { project: Project }) {
           >
             {isGenerating ? (
               <>
-                <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Generating Audio...
               </>
             ) : (
