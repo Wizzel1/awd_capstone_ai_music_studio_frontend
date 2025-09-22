@@ -20,7 +20,7 @@ export default function VideoManager({ project }: VideoManagerProps) {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-  const handleGenerateNewProject = () => {
+  const goToCreatePage = () => {
     router.push(`/projects/${project.id}/create`);
   };
 
@@ -35,10 +35,7 @@ export default function VideoManager({ project }: VideoManagerProps) {
           </p>
         </div>
         {videoAssets.length > 0 && (
-          <Button
-            onClick={handleGenerateNewProject}
-            className="w-full sm:w-auto"
-          >
+          <Button onClick={goToCreatePage} className="w-full sm:w-auto">
             Create New Video
           </Button>
         )}
@@ -78,7 +75,7 @@ export default function VideoManager({ project }: VideoManagerProps) {
               <p className="text-zinc-600 mb-4">
                 Start creating your first video.
               </p>
-              <Button onClick={handleGenerateNewProject} variant="outline">
+              <Button onClick={goToCreatePage} variant="outline">
                 Create Video
               </Button>
             </div>
